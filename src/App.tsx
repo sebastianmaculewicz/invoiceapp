@@ -1,11 +1,12 @@
 import './App.css'
+import Header from './components/Header'
 import InvoiceCreator from './components/InvoiceCreator'
 
 function App() {
 
   return (
     <>
-      <h1>Invoice App</h1>
+      <Header />
       <InvoiceCreator />
     </>
   )
