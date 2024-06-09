@@ -1,13 +1,13 @@
 import './App.css'
 import Header from './components/Header'
-import InvoiceCreator from './components/InvoiceCreator'
+import InvoiceForm from './components/InvoiceForm'
 
 function App() {
 
   return (
     <>
       <Header />
-      <InvoiceCreator />
+      <InvoiceForm />
     </>
   )
 }
