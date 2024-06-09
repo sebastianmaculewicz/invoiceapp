@@ -15,10 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { serialize } from "v8";
-import InvoiceItem from "./ui/InvoiceItem";
-import { useState } from "react";
 
-//move to utils
 const formSchema = z.object({
   sellerName: z.string().min(1, {
     message: "Uzupełnij nazwę sprzedawcy",
@@ -35,35 +32,24 @@ const formSchema = z.object({
   serviceName: z.string().min(1, {
     message: "Uzupełnij nazwę",
   }),
-  serviceQuantity: z.coerce.number().refine((data) => data > 0, {
-    message: "Ilość musi być większa od 0",
+  serviceQuantity: z.number().min(1, {
+    message: "Uzupełnij ilość",
   }),
-  servicePriceNet: z.string().min(1, {
+  servicePriceNet: z.number().min(1, {
     message: "Uzupełnij cenę netto",
   }),
-  serviceTax: z.coerce.number().refine((data) => data > 0, {
-    message: "Wartość podatku musi być większa od 0",
+  serviceTax: z.number().min(1, {
+    message: "Uzupełnij wartość podatku",
   }),
-  serviceValueNet: z.string().min(1, {
+  serviceValueNet: z.number().min(1, {
     message: "Uzupełnij wartość netto",
   }),
-  serviceValueGross: z.string().min(1, {
+  serviceValueGross: z.number().min(1, {
     message: "Uzupełnij wartość brutto",
   }),
 });
 
 export default function InvoiceCreator() {
-  const [invoiceItems, setInvoiceItems] = useState({
-    1: {
-      serviceName: "",
-      serviceQuantity: 1,
-      servicePriceNet: "",
-      serviceTax: 23,
-      serviceValueNet: "",
-      serviceValueGross: "",
-    }
-  });
-
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     mode: "onChange",
@@ -75,10 +61,10 @@ export default function InvoiceCreator() {
       buyerAddress: "",
       serviceName: "",
       serviceQuantity: 1,
-      servicePriceNet: "",
+      servicePriceNet: undefined,
       serviceTax: 23,
-      serviceValueNet: "",
-      serviceValueGross: "",
+      serviceValueNet: undefined,
+      serviceValueGross: undefined,
     },
   });
 
@@ -87,11 +73,6 @@ export default function InvoiceCreator() {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
-  }
-
-  function addInvoiceItem(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    console.log("add invoice item");
   }
 
   return (
@@ -175,16 +156,92 @@ export default function InvoiceCreator() {
               <CardTitle>Pozycje na fakturze</CardTitle>
             </CardHeader>
             <CardContent>
-
-              <InvoiceItem form={form} />
-              
-              <Button
-                className="mt-2"
-                variant={"secondary"}
-                onClick={addInvoiceItem}
-              >
-                + Dodaj pozycję
-              </Button>
+              <div className="grid grid-cols-[50%_repeat(5,_1fr)_25px] gap-2 items-end">
+                <FormField
+                  control={form.control}
+                  name="serviceName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs">Nazwa</FormLabel>
+                      <FormControl>
+                        <Input placeholder="" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                ></FormField>
+                <FormField
+                  control={form.control}
+                  name="serviceQuantity"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs">Ilość</FormLabel>
+                      <FormControl>
+                        <Input placeholder="" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                ></FormField>
+                <FormField
+                  control={form.control}
+                  name="servicePriceNet"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs">Cena netto</FormLabel>
+                      <FormControl>
+                        <Input placeholder="" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                ></FormField>
+                <FormField
+                  control={form.control}
+                  name="serviceTax"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs">VAT %</FormLabel>
+                      <FormControl>
+                        <Input placeholder="" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                ></FormField>
+                <FormField
+                  control={form.control}
+                  name="serviceValueNet"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs">Wartość netto</FormLabel>
+                      <FormControl>
+                        <Input placeholder="" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                ></FormField>
+                <FormField
+                  control={form.control}
+                  name="serviceValueGross"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs">Wartość brutto</FormLabel>
+                      <FormControl>
+                        <Input placeholder="" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                ></FormField>
+                <div className="relative -top-1 -right-2">
+                  <button>
+                    <Trash2 />
+                  </button>
+                </div>
+              </div>
+              <Button className="mt-2" variant={"secondary"}>+ Dodaj pozycję</Button>
             </CardContent>
           </Card>
         </section>
