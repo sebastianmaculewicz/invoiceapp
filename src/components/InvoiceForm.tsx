@@ -3,8 +3,20 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import InvoiceFormItem from "./InvoiceFormItem";
 import { useState } from "react";
+import { formatDate } from "@/lib/utils";
 
 export default function InvoiceForm() {
+  const [invoiceData, setInvoiceData] = useState({
+    invoiceNumber: "",
+    invoiceIssueDate: formatDate(new Date()),
+    invoiceIssuePlace: "",
+    invoiceSaleDate: formatDate(new Date()),
+    buyerName: "",
+    buyerAddress: "",
+    sellerName: "",
+    sellerAddress: "",
+    invoiceItems: [],
+  })
   const [invoiceCount, setInvoiceCount] = useState(0);
   const [invoiceItems, setInvoiceItems] = useState([
     {
@@ -20,16 +32,25 @@ export default function InvoiceForm() {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const updatedInvoiceItems = invoiceItems.map((invoiceItem) => {
-      if (invoiceItem.id === Number(e.currentTarget.closest(".invoice-item")?.getAttribute("data-id"))) {
-        return {
-          ...invoiceItem,
-          [name]: value,
-        };
-      }
-      return invoiceItem;
-    });
-    setInvoiceItems(updatedInvoiceItems);
+
+    if(name === "invoiceNumber" || name === "invoiceIssueDate" || name === "invoiceIssuePlace" || name === "invoiceSaleDate" || name === "buyerName" || name === "buyerAddress" || name === "sellerName" || name === "sellerAddress") {
+      const updatedInvoiceData = {...invoiceData};
+      updatedInvoiceData[name] = value;
+
+      setInvoiceData(updatedInvoiceData);
+    } else {
+      const updatedInvoiceItems = invoiceItems.map((invoiceItem) => {
+        if (invoiceItem.id === Number(e.currentTarget.closest(".invoice-item")?.getAttribute("data-id"))) {
+          return {
+            ...invoiceItem,
+            [name]: value,
+          };
+        }
+        return invoiceItem;
+      });
+
+      setInvoiceItems(updatedInvoiceItems);
+    }
   };
 
   const handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -82,8 +103,11 @@ export default function InvoiceForm() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const invoiceDataToSave = {
+      [invoiceData.invoiceNumber]: {...invoiceData, invoiceItems: invoiceItems},
+    }
 
-    localStorage.setItem("invoiceItems", JSON.stringify(invoiceItems));
+    localStorage.setItem("invoiceData", JSON.stringify(invoiceDataToSave));
 
     console.log("submit");
     return false;
@@ -122,19 +146,19 @@ export default function InvoiceForm() {
           <CardContent className="flex gap-2 items-start">
             <div>
               <label>Numer</label>
-              <Input name="invoiceNumber" type="text" />
+              <Input name="invoiceNumber" type="text" value={invoiceData.invoiceNumber} onChange={handleChange} />
             </div>
             <div>
               <label>Data wystawienia</label>
-              <Input name="invoiceIssueDate" type="date" />
+              <Input name="invoiceIssueDate" type="date" value={invoiceData.invoiceIssueDate} onChange={handleChange} />
             </div>
             <div>
               <label>Miejsce wystawienia</label>
-              <Input name="invoiceIssuePlace" type="text" />
+              <Input name="invoiceIssuePlace" type="text" value={invoiceData.invoiceIssuePlace} onChange={handleChange} />
             </div>
             <div>
               <label>Data sprzedaży</label>
-              <Input name="invoiceSaleDate" type="date" />
+              <Input name="invoiceSaleDate" type="date" value={invoiceData.invoiceSaleDate} onChange={handleChange} />
             </div>
           </CardContent>
         </Card>
