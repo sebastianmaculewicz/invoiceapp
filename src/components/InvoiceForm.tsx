@@ -66,8 +66,6 @@ export default function InvoiceForm() {
             break;
         }
 
-        console.log(name, quantity, priceNet, tax, valueNet, valueGross);
-
         return {
           ...invoiceItem,
           serviceQuantity: String(quantity),
@@ -84,6 +82,8 @@ export default function InvoiceForm() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    localStorage.setItem("invoiceItems", JSON.stringify(invoiceItems));
 
     console.log("submit");
     return false;
@@ -114,6 +114,31 @@ export default function InvoiceForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      <section id="invoice_data" className="flex justify-center gap-5 text-left">
+        <Card className="flex-grow">
+          <CardHeader>
+            <CardTitle>Dane faktury</CardTitle>
+          </CardHeader>
+          <CardContent className="flex gap-2 items-start">
+            <div>
+              <label>Numer</label>
+              <Input name="invoiceNumber" type="text" />
+            </div>
+            <div>
+              <label>Data wystawienia</label>
+              <Input name="invoiceIssueDate" type="date" />
+            </div>
+            <div>
+              <label>Miejsce wystawienia</label>
+              <Input name="invoiceIssuePlace" type="text" />
+            </div>
+            <div>
+              <label>Data sprzedaży</label>
+              <Input name="invoiceSaleDate" type="date" />
+            </div>
+          </CardContent>
+        </Card>
+      </section>
       <section
         id="address_data"
         className="flex justify-center gap-5 text-left"
