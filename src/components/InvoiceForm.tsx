@@ -4,14 +4,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import InvoiceFormItem from "./InvoiceFormItem";
 import React from "react";
 import { InvoiceFormProps } from "@/types";
+import { generateInvoiceNumber } from "@/lib/utils";
 
 export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceData, setInvoiceItems, invoiceItems }: InvoiceFormProps) {
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    
+    console.log(name, value);
 
     if (name in invoiceData) {
-      const updatedInvoiceData = { ...invoiceData, [name]: value };
+      let updatedInvoiceData = { ...invoiceData, [name]: value };
+
+      if(name === 'invoiceIssueDate') {
+        updatedInvoiceData = { ...updatedInvoiceData, invoiceNumber: generateInvoiceNumber(savedInvoiceData, new Date(value)), invoiceSaleDate: value };
+      }
+      
       setInvoiceData(updatedInvoiceData);
     } else {
       const updatedInvoiceItems = invoiceItems.map((invoiceItem) => {
@@ -141,11 +149,11 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
           <CardContent className="space-y-2">
             <div>
               <label>Nazwa</label>
-              <Input name="buyerName" type="text" value={invoiceData.buyerName} onChange={handleChange} />
+              <Input name="sellerName" type="text" value={invoiceData.sellerName} onChange={handleChange} />
             </div>
             <div>
               <label>Adres</label>
-              <Input name="buyerAddress" type="text" value={invoiceData.buyerAddress} onChange={handleChange} />
+              <Input name="sellerAddress" type="text" value={invoiceData.sellerAddress} onChange={handleChange} />
             </div>
           </CardContent>
         </Card>
@@ -156,11 +164,11 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
           <CardContent className="space-y-2">
             <div>
               <label>Nazwa</label>
-              <Input name="sellerName" type="text" value={invoiceData.sellerName} onChange={handleChange} />
+              <Input name="buyerName" type="text" value={invoiceData.buyerName} onChange={handleChange} />
             </div>
             <div>
               <label>Adres</label>
-              <Input name="sellerAddress" type="text" value={invoiceData.sellerAddress} onChange={handleChange} />
+              <Input name="buyerAddress" type="text" value={invoiceData.buyerAddress} onChange={handleChange} />
             </div>
           </CardContent>
         </Card>

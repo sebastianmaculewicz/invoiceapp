@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css'
 import Header from './components/Header'
 import InvoiceForm from './components/InvoiceForm'
-import { formatDate } from './lib/utils';
+import { formatDate, generateInvoiceNumber } from './lib/utils';
 import { InvoiceData, InvoiceItem } from './types';
 
 function App() {
@@ -11,10 +11,10 @@ function App() {
     invoiceIssueDate: formatDate(new Date()),
     invoiceIssuePlace: "",
     invoiceSaleDate: formatDate(new Date()),
-    buyerName: "",
-    buyerAddress: "",
     sellerName: "",
     sellerAddress: "",
+    buyerName: "",
+    buyerAddress: "",
     invoiceItems: [],
   })
 
@@ -43,6 +43,13 @@ function App() {
       setInvoiceItems(invoiceData.invoiceItems);
     }
   }
+
+  useEffect(() => {
+    if (savedInvoiceData) {
+      const invoiceNumber = generateInvoiceNumber(savedInvoiceData, new Date());
+      setInvoiceData({ ...invoiceData, invoiceNumber });
+    }
+  }, []);
 
   return (
     <>
