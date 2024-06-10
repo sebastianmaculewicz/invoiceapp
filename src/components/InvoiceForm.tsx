@@ -2,41 +2,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import InvoiceFormItem from "./InvoiceFormItem";
-import { useState } from "react";
-import { formatDate } from "@/lib/utils";
+import React from "react";
+import { InvoiceFormProps } from "@/types";
 
-export default function InvoiceForm() {
-  const [invoiceData, setInvoiceData] = useState({
-    invoiceNumber: "",
-    invoiceIssueDate: formatDate(new Date()),
-    invoiceIssuePlace: "",
-    invoiceSaleDate: formatDate(new Date()),
-    buyerName: "",
-    buyerAddress: "",
-    sellerName: "",
-    sellerAddress: "",
-    invoiceItems: [],
-  })
-  const [invoiceCount, setInvoiceCount] = useState(0);
-  const [invoiceItems, setInvoiceItems] = useState([
-    {
-      id: invoiceCount,
-      serviceName: "",
-      serviceQuantity: "1",
-      servicePriceNet: "",
-      serviceTax: "23",
-      serviceValueNet: "",
-      serviceValueGross: "",
-    },
-  ]);
-
+export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceData, setInvoiceItems, invoiceItems }: InvoiceFormProps) {
+  
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
-    if(name === "invoiceNumber" || name === "invoiceIssueDate" || name === "invoiceIssuePlace" || name === "invoiceSaleDate" || name === "buyerName" || name === "buyerAddress" || name === "sellerName" || name === "sellerAddress") {
-      const updatedInvoiceData = {...invoiceData};
-      updatedInvoiceData[name] = value;
-
+    if (name in invoiceData) {
+      const updatedInvoiceData = { ...invoiceData, [name]: value };
       setInvoiceData(updatedInvoiceData);
     } else {
       const updatedInvoiceItems = invoiceItems.map((invoiceItem) => {
@@ -57,12 +32,12 @@ export default function InvoiceForm() {
     const { name, value } = e.target;
     const updatedInvoiceItems = invoiceItems.map((invoiceItem) => {
       if (invoiceItem.id === Number(e.currentTarget.closest(".invoice-item")?.getAttribute("data-id"))) {
-        let serviceName = invoiceItem.serviceName;
-        let quantity = Number(invoiceItem.serviceQuantity);
-        let priceNet = Number(invoiceItem.servicePriceNet.replace(',', '.'));
-        let tax = Number(invoiceItem.serviceTax);
-        let valueNet = Number(invoiceItem.serviceValueNet.replace('.', ','));
-        let valueGross = Number(invoiceItem.serviceValueGross.replace('.', ','));
+        let { serviceName, serviceQuantity, servicePriceNet, serviceTax, serviceValueNet, serviceValueGross } = invoiceItem;
+        let quantity = Number(serviceQuantity);
+        let priceNet = Number(servicePriceNet.replace(',', '.'));
+        let tax = Number(serviceTax);
+        let valueNet = Number(serviceValueNet.replace('.', ','));
+        let valueGross = Number(serviceValueGross.replace('.', ','));
 
         switch (name) {
           case "serviceName":
@@ -72,9 +47,7 @@ export default function InvoiceForm() {
             quantity = Number(value);
             break;
           case "servicePriceNet":
-            console.log('value', value);
             priceNet = Number(value.replace(',', '.'));
-            console.log(priceNet);
             break;
           case "serviceTax":
             tax = Number(value);
@@ -89,6 +62,7 @@ export default function InvoiceForm() {
 
         return {
           ...invoiceItem,
+          serviceName,
           serviceQuantity: String(quantity),
           servicePriceNet: String(priceNet.toFixed(2)).replace('.', ','),
           serviceValueNet: String((quantity * priceNet).toFixed(2)).replace('.', ','),
@@ -98,43 +72,39 @@ export default function InvoiceForm() {
       return invoiceItem;
     });
     setInvoiceItems(updatedInvoiceItems);
-    console.log(updatedInvoiceItems);
-  }
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const invoiceDataToSave = {
-      [invoiceData.invoiceNumber]: {...invoiceData, invoiceItems: invoiceItems},
-    }
+      [invoiceData.invoiceNumber]: { ...invoiceData, invoiceItems },
+    };
 
-    localStorage.setItem("invoiceData", JSON.stringify(invoiceDataToSave));
-
-    console.log("submit");
-    return false;
-  }
+    localStorage.setItem("invoiceData", JSON.stringify({...savedInvoiceData, ...invoiceDataToSave }));
+  };
 
   const addInvoiceItem = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    setInvoiceItems([...invoiceItems, {
-      id: invoiceCount + 1,
-      serviceName: "",
-      serviceQuantity: "1",
-      servicePriceNet: "",
-      serviceTax: "23",
-      serviceValueNet: "",
-      serviceValueGross: "",
-    }]);
+    setInvoiceItems([
+      ...invoiceItems,
+      {
+        id: invoiceItems.length,
+        serviceName: "",
+        serviceQuantity: "1",
+        servicePriceNet: "",
+        serviceTax: "23",
+        serviceValueNet: "",
+        serviceValueGross: "",
+      },
+    ]);
+  };
 
-    setInvoiceCount(invoiceCount + 1);
-  }
-
-  function removeInvoiceItem(e: React.MouseEvent<HTMLButtonElement>) {
+  const removeInvoiceItem = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
     const itemId = Number(e.currentTarget.closest(".invoice-item")?.getAttribute("data-id"));
-    setInvoiceItems(invoiceItems.filter((invoiceItem, index) => invoiceItem.id !== itemId));
-  }
+    setInvoiceItems(invoiceItems.filter((invoiceItem) => invoiceItem.id !== itemId));
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
@@ -163,10 +133,7 @@ export default function InvoiceForm() {
           </CardContent>
         </Card>
       </section>
-      <section
-        id="address_data"
-        className="flex justify-center gap-5 text-left"
-      >
+      <section id="address_data" className="flex justify-center gap-5 text-left">
         <Card className="flex-grow">
           <CardHeader>
             <CardTitle>Dane sprzedawcy</CardTitle>
@@ -174,11 +141,11 @@ export default function InvoiceForm() {
           <CardContent className="space-y-2">
             <div>
               <label>Nazwa</label>
-              <Input name="buyerName" type="text" />
+              <Input name="buyerName" type="text" value={invoiceData.buyerName} onChange={handleChange} />
             </div>
             <div>
               <label>Adres</label>
-              <Input name="buyerAddress" type="text" />
+              <Input name="buyerAddress" type="text" value={invoiceData.buyerAddress} onChange={handleChange} />
             </div>
           </CardContent>
         </Card>
@@ -189,11 +156,11 @@ export default function InvoiceForm() {
           <CardContent className="space-y-2">
             <div>
               <label>Nazwa</label>
-              <Input name="sellerName" type="text" />
+              <Input name="sellerName" type="text" value={invoiceData.sellerName} onChange={handleChange} />
             </div>
             <div>
               <label>Adres</label>
-              <Input name="sellerAddress" type="text" />
+              <Input name="sellerAddress" type="text" value={invoiceData.sellerAddress} onChange={handleChange} />
             </div>
           </CardContent>
         </Card>
@@ -205,16 +172,17 @@ export default function InvoiceForm() {
             <CardTitle>Pozycje na fakturze</CardTitle>
           </CardHeader>
           <CardContent>
-            
             {invoiceItems.map((invoiceItem, index) => (
-              <InvoiceFormItem invoiceItemData={invoiceItem} removeInvoiceItem={removeInvoiceItem} index={index} key={index} handleChange={handleChange} handleBlur={handleBlur} />
+              <InvoiceFormItem
+                invoiceItemData={invoiceItem}
+                removeInvoiceItem={removeInvoiceItem}
+                index={index}
+                key={index}
+                handleChange={handleChange}
+                handleBlur={handleBlur}
+              />
             ))}
-
-            <Button
-              className="mt-2"
-              variant={"secondary"}
-              onClick={addInvoiceItem}
-            >
+            <Button className="mt-2" variant={"secondary"} onClick={addInvoiceItem}>
               + Dodaj pozycję
             </Button>
           </CardContent>
