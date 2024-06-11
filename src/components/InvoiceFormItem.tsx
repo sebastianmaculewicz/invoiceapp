@@ -1,8 +1,8 @@
 import { Input } from "@/components/ui/input";
 import { Trash2 } from "lucide-react";
-import { InvoiceItem, InvoiceFormItemProps } from "@/types";
+import { InvoiceFormItemProps } from "@/types";
 
-export default function InvoiceFormItem({ invoiceItemData, removeInvoiceItem, index, handleChange, handleBlur }: InvoiceFormItemProps) {
+export default function InvoiceFormItem({ invoiceItemData, removeInvoiceItem, handleChange, handleBlur }: InvoiceFormItemProps) {
   return (
     <>
       <div className="invoice-item lg:grid lg:grid-cols-[25px_50%_repeat(5,_1fr)_25px] lg:gap-2 lg:items-end lg:space-y-0 lg:mb-0 my-2 relative space-y-2 mb-5" data-id={invoiceItemData.id}>
