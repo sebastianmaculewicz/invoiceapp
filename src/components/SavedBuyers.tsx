@@ -6,30 +6,30 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
 
-export default function SavedSellers({
-  sellersData,
-  loadSpecificSeller,
+export default function SavedBuyers({
+  buyersData,
+  loadSpecificBuyer,
 }: {
-  sellersData: any;
-  loadSpecificSeller: any;
+  buyersData: any;
+  loadSpecificBuyer: any;
 }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant={"outline"} disabled={!sellersData ? true : false}>
-          Zapisani sprzedawcy
+        <Button variant={"outline"} disabled={!buyersData ? true : false}>
+          Zapisani nabywcy
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="max-h-[50vh] overflow-y-auto">
-        {sellersData &&
-          Object.keys(sellersData).map((seller, index) => (
+        {buyersData &&
+          Object.keys(buyersData).map((buyer, index) => (
             <DropdownMenuItem
               key={index}
-              data-seller-id={seller}
-              className="seller-item cursor-pointer"
-              onClick={loadSpecificSeller}
+              data-buyer-id={buyer}
+              className="buyer-item cursor-pointer"
+              onClick={loadSpecificBuyer}
             >
-              {sellersData[seller].sellerName}
+              {buyersData[buyer].buyerName}
             </DropdownMenuItem>
           ))}
       </DropdownMenuContent>

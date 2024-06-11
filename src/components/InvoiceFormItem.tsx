@@ -33,7 +33,7 @@ export default function InvoiceFormItem({invoiceItemData, removeInvoiceItem, ind
       </div>
       <div className="lg:top-auto lg:bottom-1.5 lg:-right-2 absolute right-0 -top-1">
         <button>
-          <Trash2 onClick={removeInvoiceItem} />
+          <Trash2 color="#666" onClick={removeInvoiceItem} />
         </button>
       </div>
     </div>

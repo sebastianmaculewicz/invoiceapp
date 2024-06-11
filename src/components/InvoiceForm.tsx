@@ -6,8 +6,10 @@ import React from "react";
 import { InvoiceFormProps } from "@/types";
 import { generateInvoiceNumber } from "@/lib/utils";
 import SavedSellers from "./SavedSellers";
+import SavedBuyers from "./SavedBuyers";
+import InvoiceSummary from "./InvoiceSummary";
 
-export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceData, setInvoiceItems, invoiceItems }: InvoiceFormProps) {
+export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceData, setInvoiceItems, invoiceItems, sellersData, buyersData, loadSpecificSeller, loadSpecificBuyer }: InvoiceFormProps) {
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -19,6 +21,14 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
 
       if(name === 'invoiceIssueDate') {
         updatedInvoiceData = { ...updatedInvoiceData, invoiceNumber: generateInvoiceNumber(savedInvoiceData, new Date(value)), invoiceSaleDate: value };
+      }
+
+      if(updatedInvoiceData.sellerID === -1) {
+        updatedInvoiceData.sellerID = sellersData.length;
+      }
+
+      if(updatedInvoiceData.buyerID === -1) {
+        updatedInvoiceData.buyerID = buyersData.length;
       }
       
       setInvoiceData(updatedInvoiceData);
@@ -63,16 +73,18 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
             break;
           case "serviceValueNet":
             valueNet = Number(value);
+            priceNet = valueNet / quantity;
             break;
           case "serviceValueGross":
             valueGross = Number(value);
+            priceNet = valueGross / (1 + tax / 100) / quantity;
             break;
         }
 
         return {
           ...invoiceItem,
           serviceName,
-          serviceQuantity: String(quantity),
+          serviceQuantity: Number(quantity),
           servicePriceNet: String(priceNet.toFixed(2)).replace('.', ','),
           serviceValueNet: String((quantity * priceNet).toFixed(2)).replace('.', ','),
           serviceValueGross: String((quantity * priceNet * (1 + tax / 100)).toFixed(2)).replace('.', ','),
@@ -100,9 +112,9 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
       {
         id: invoiceItems.length + 1,
         serviceName: "",
-        serviceQuantity: "1",
+        serviceQuantity: 1,
         servicePriceNet: "",
-        serviceTax: "23",
+        serviceTax: 23,
         serviceValueNet: "",
         serviceValueGross: "",
       },
@@ -114,10 +126,6 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
     const itemId = Number(e.currentTarget.closest(".invoice-item")?.getAttribute("data-id"));
     setInvoiceItems(invoiceItems.filter((invoiceItem) => invoiceItem.id !== itemId));
   };
-
-  const loadSpecificSeller = () => {
-    return false;
-  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
@@ -148,9 +156,9 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
       </section>
       <section id="address_data" className="lg:flex lg:justify-center lg:gap-5 lg:space-y-0 text-left space-y-5">
         <Card className="flex-grow">
-          <CardHeader>
+          <CardHeader className="flex-row items-center justify-between">
             <CardTitle>Dane sprzedawcy</CardTitle>
-            <SavedSellers savedInvoiceData={savedInvoiceData} loadSpecificSeller={loadSpecificSeller} />
+            <SavedSellers sellersData={sellersData} loadSpecificSeller={loadSpecificSeller} />
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <div>
@@ -180,8 +188,9 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
           </CardContent>
         </Card>
         <Card className="flex-grow">
-          <CardHeader>
+          <CardHeader className="flex-row items-center justify-between">
             <CardTitle>Dane nabywcy</CardTitle>
+            <SavedBuyers buyersData={buyersData} loadSpecificBuyer={loadSpecificBuyer} />
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <div>
@@ -231,11 +240,12 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
             <Button className="mt-2" variant={"secondary"} onClick={addInvoiceItem}>
               + Dodaj pozycję
             </Button>
+            <InvoiceSummary invoiceItems={invoiceItems} />
           </CardContent>
         </Card>
       </section>
       
-      <Button type="submit">Zapisz</Button>
+      <Button type="submit">Zapisz fakturę</Button>
     </form>
   );
 }

@@ -1,4 +1,4 @@
-import { InvoiceData } from "@/types";
+import { BuyerInfo, Buyers, InvoiceData, SellerInfo, Sellers } from "@/types";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -24,8 +24,6 @@ export function generateInvoiceNumber(savedInvoiceData: Record<string, InvoiceDa
   const currentMonth = currentDateObj.getMonth() + 1;
   const currentYear = currentDateObj.getFullYear();
 
-  console.log(currentMonth, currentYear);
-
   let invoiceCount = 0;
 
   if(savedInvoiceData) {
@@ -42,36 +40,37 @@ export function generateInvoiceNumber(savedInvoiceData: Record<string, InvoiceDa
   return newInvoiceNumber;
 }
 
-export function extractSellersAndBuyers(data: InvoiceData) {
-  const sellers = {};
-  const buyers = {};
-  
+export function extractSellersAndBuyers(data: Record<string, InvoiceData>) {
+  const sellers: Sellers = {};
+  const buyers: Buyers = {};
+
   for (const invoiceKey in data) {
-      if (data.hasOwnProperty(invoiceKey)) {
-          const invoice = data[invoiceKey];
+    if (data.hasOwnProperty(invoiceKey)) {
+      const invoice = data[invoiceKey];
 
-          // Extract seller information
-          const sellerInfo = {
-              sellerName: invoice.sellerName,
-              sellerNIP: invoice.sellerNIP,
-              sellerBankAccountNumber: invoice.sellerBankAccountNumber,
-              sellerStreetWithNumber: invoice.sellerStreetWithNumber,
-              sellerZipcode: invoice.sellerZipcode,
-              sellerCity: invoice.sellerCity
-          };
-          sellers[invoice.sellerName] = sellerInfo;
+      // Extract seller information
+      const sellerInfo: SellerInfo = {
+        sellerID: invoice.sellerID,
+        sellerName: invoice.sellerName,
+        sellerNIP: invoice.sellerNIP,
+        sellerBankAccountNumber: invoice.sellerBankAccountNumber,
+        sellerStreetWithNumber: invoice.sellerStreetWithNumber,
+        sellerZipcode: invoice.sellerZipcode,
+        sellerCity: invoice.sellerCity,
+      };
+      sellers[invoice.sellerID] = sellerInfo;
 
-          // Extract buyer information
-          const buyerInfo = {
-              buyerName: invoice.buyerName,
-              buyerNIP: invoice.buyerNIP,
-              buyerBankAccountNumber: invoice.buyerBankAccountNumber,
-              buyerStreetWithNumber: invoice.buyerStreetWithNumber,
-              buyerZipcode: invoice.buyerZipcode,
-              buyerCity: invoice.buyerCity
-          };
-          buyers[invoice.buyerName] = buyerInfo;
-      }
+      // Extract buyer information
+      const buyerInfo: BuyerInfo = {
+        buyerName: invoice.buyerName,
+        buyerNIP: invoice.buyerNIP,
+        buyerBankAccountNumber: invoice.buyerBankAccountNumber,
+        buyerStreetWithNumber: invoice.buyerStreetWithNumber,
+        buyerZipcode: invoice.buyerZipcode,
+        buyerCity: invoice.buyerCity,
+      };
+      buyers[invoice.buyerName] = buyerInfo;
+    }
   }
 
   return { sellers, buyers };

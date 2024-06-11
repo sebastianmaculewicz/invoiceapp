@@ -20,7 +20,7 @@ export default function SavedInvoices({
           Zapisane faktury
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent className="max-h-[50vh] overflow-y-auto">
         {savedInvoiceData && Object.keys(savedInvoiceData).map((invoiceNumber) => (
           <DropdownMenuItem key={invoiceNumber} data-invoice-number={invoiceNumber} className="invoice-item cursor-pointer" onClick={loadSpecificInvoice}>
             {invoiceNumber +
