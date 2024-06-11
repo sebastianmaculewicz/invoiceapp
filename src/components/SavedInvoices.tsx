@@ -22,7 +22,7 @@ export default function SavedInvoices({
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         {savedInvoiceData && Object.keys(savedInvoiceData).map((invoiceNumber) => (
-          <DropdownMenuItem key={invoiceNumber} data-invoice-number={invoiceNumber} className="invoice-item" onClick={loadSpecificInvoice}>
+          <DropdownMenuItem key={invoiceNumber} data-invoice-number={invoiceNumber} className="invoice-item cursor-pointer" onClick={loadSpecificInvoice}>
             {invoiceNumber +
               " - " +
               savedInvoiceData[invoiceNumber].invoiceIssueDate}

@@ -12,15 +12,23 @@ function App() {
     invoiceIssuePlace: "",
     invoiceSaleDate: formatDate(new Date()),
     sellerName: "",
-    sellerAddress: "",
+    sellerNIP: "",
+    sellerBankAccountNumber: "",
+    sellerStreetWithNumber: "",
+    sellerZipcode: "",
+    sellerCity: "",
     buyerName: "",
-    buyerAddress: "",
+    buyerNIP: "",
+    buyerBankAccountNumber: "",
+    buyerStreetWithNumber: "",
+    buyerZipcode: "",
+    buyerCity: "",
     invoiceItems: [],
   })
 
   const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>([
     {
-      id: 0,
+      id: 1,
       serviceName: "",
       serviceQuantity: "1",
       servicePriceNet: "",
@@ -45,10 +53,8 @@ function App() {
   }
 
   useEffect(() => {
-    if (savedInvoiceData) {
-      const invoiceNumber = generateInvoiceNumber(savedInvoiceData, new Date());
-      setInvoiceData({ ...invoiceData, invoiceNumber });
-    }
+    const invoiceNumber = generateInvoiceNumber(savedInvoiceData, new Date());
+    setInvoiceData({ ...invoiceData, invoiceNumber });
   }, []);
 
   return (

@@ -4,3 +4,9 @@
   padding: 2rem;
   text-align: center;
 }
+
+@media (min-width: 1024px) {
+  .invoice-item:not(:first-child) label {
+      display: none;
+  }
+}

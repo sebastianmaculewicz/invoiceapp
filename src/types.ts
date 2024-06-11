@@ -13,10 +13,18 @@ export interface InvoiceItem {
     invoiceIssueDate: string;
     invoiceIssuePlace: string;
     invoiceSaleDate: string;
-    buyerName: string;
-    buyerAddress: string;
     sellerName: string;
-    sellerAddress: string;
+    sellerNIP: string;
+    sellerBankAccountNumber: string;
+    sellerStreetWithNumber: string;
+    sellerZipcode: string;
+    sellerCity: string;
+    buyerName: string;
+    buyerNIP: string;
+    buyerBankAccountNumber: string;
+    buyerStreetWithNumber: string;
+    buyerZipcode: string;
+    buyerCity: string;
     invoiceItems: InvoiceItem[];
   }
   
@@ -26,6 +34,7 @@ export interface InvoiceItem {
     invoiceData: InvoiceData;
     setInvoiceItems: React.Dispatch<React.SetStateAction<InvoiceItem[]>>;
     invoiceItems: InvoiceItem[];
+    loadSpecificSeller: (e: React.MouseEvent<HTMLButtonElement>) => void;
   }
   
   export interface InvoiceFormItemProps {

@@ -27,14 +27,52 @@ export function generateInvoiceNumber(savedInvoiceData: Record<string, InvoiceDa
   console.log(currentMonth, currentYear);
 
   let invoiceCount = 0;
-  for (let invoiceId in savedInvoiceData) {
-    const invoiceDate = new Date(savedInvoiceData[invoiceId].invoiceIssueDate);
-    if (invoiceDate.getMonth() + 1 === currentMonth && invoiceDate.getFullYear() === currentYear) {
-      invoiceCount++;
+
+  if(savedInvoiceData) {
+    for (let invoiceId in savedInvoiceData) {
+      const invoiceDate = new Date(savedInvoiceData[invoiceId].invoiceIssueDate);
+      if (invoiceDate.getMonth() + 1 === currentMonth && invoiceDate.getFullYear() === currentYear) {
+        invoiceCount++;
+      }
     }
   }
 
   const newInvoiceNumber = `${invoiceCount + 1}/${String(currentMonth).padStart(2, '0')}/${currentYear}`;
   
   return newInvoiceNumber;
+}
+
+export function extractSellersAndBuyers(data: InvoiceData) {
+  const sellers = {};
+  const buyers = {};
+  
+  for (const invoiceKey in data) {
+      if (data.hasOwnProperty(invoiceKey)) {
+          const invoice = data[invoiceKey];
+
+          // Extract seller information
+          const sellerInfo = {
+              sellerName: invoice.sellerName,
+              sellerNIP: invoice.sellerNIP,
+              sellerBankAccountNumber: invoice.sellerBankAccountNumber,
+              sellerStreetWithNumber: invoice.sellerStreetWithNumber,
+              sellerZipcode: invoice.sellerZipcode,
+              sellerCity: invoice.sellerCity
+          };
+          sellers[invoice.sellerName] = sellerInfo;
+
+          // Extract buyer information
+          const buyerInfo = {
+              buyerName: invoice.buyerName,
+              buyerNIP: invoice.buyerNIP,
+              buyerBankAccountNumber: invoice.buyerBankAccountNumber,
+              buyerStreetWithNumber: invoice.buyerStreetWithNumber,
+              buyerZipcode: invoice.buyerZipcode,
+              buyerCity: invoice.buyerCity
+          };
+          buyers[invoice.buyerName] = buyerInfo;
+      }
+  }
+
+  return { sellers, buyers };
 }

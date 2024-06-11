@@ -5,6 +5,7 @@ import InvoiceFormItem from "./InvoiceFormItem";
 import React from "react";
 import { InvoiceFormProps } from "@/types";
 import { generateInvoiceNumber } from "@/lib/utils";
+import SavedSellers from "./SavedSellers";
 
 export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceData, setInvoiceItems, invoiceItems }: InvoiceFormProps) {
   
@@ -97,7 +98,7 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
     setInvoiceItems([
       ...invoiceItems,
       {
-        id: invoiceItems.length,
+        id: invoiceItems.length + 1,
         serviceName: "",
         serviceQuantity: "1",
         servicePriceNet: "",
@@ -114,14 +115,18 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
     setInvoiceItems(invoiceItems.filter((invoiceItem) => invoiceItem.id !== itemId));
   };
 
+  const loadSpecificSeller = () => {
+    return false;
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
-      <section id="invoice_data" className="flex justify-center gap-5 text-left">
+      <section id="invoice_data" className="lg:flex lg:justify-center lg:gap-5 text-left">
         <Card className="flex-grow">
           <CardHeader>
             <CardTitle>Dane faktury</CardTitle>
           </CardHeader>
-          <CardContent className="flex gap-2 items-start">
+          <CardContent className="lg:flex lg:gap-2 lg:space-y-0 items-start text-sm space-y-2">
             <div>
               <label>Numer</label>
               <Input name="invoiceNumber" type="text" value={invoiceData.invoiceNumber} onChange={handleChange} />
@@ -141,19 +146,36 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
           </CardContent>
         </Card>
       </section>
-      <section id="address_data" className="flex justify-center gap-5 text-left">
+      <section id="address_data" className="lg:flex lg:justify-center lg:gap-5 lg:space-y-0 text-left space-y-5">
         <Card className="flex-grow">
           <CardHeader>
             <CardTitle>Dane sprzedawcy</CardTitle>
+            <SavedSellers savedInvoiceData={savedInvoiceData} loadSpecificSeller={loadSpecificSeller} />
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="space-y-2 text-sm">
             <div>
               <label>Nazwa</label>
               <Input name="sellerName" type="text" value={invoiceData.sellerName} onChange={handleChange} />
             </div>
             <div>
-              <label>Adres</label>
-              <Input name="sellerAddress" type="text" value={invoiceData.sellerAddress} onChange={handleChange} />
+              <label>NIP</label>
+              <Input name="sellerNIP" type="text" value={invoiceData.sellerNIP} onChange={handleChange} />
+            </div>
+            <div>
+              <label>Numer konta</label>
+              <Input name="sellerBankAccountNumber" type="text" value={invoiceData.sellerBankAccountNumber} onChange={handleChange} />
+            </div>
+            <div>
+              <label>Ulica i numer</label>
+              <Input name="sellerStreetWithNumber" type="text" value={invoiceData.sellerStreetWithNumber} onChange={handleChange} />
+            </div>
+            <div>
+              <label>Kod pocztowy</label>
+              <Input name="sellerZipcode" type="text" value={invoiceData.sellerZipcode} onChange={handleChange} />
+            </div>
+            <div>
+              <label>Miejscowość</label>
+              <Input name="sellerCity" type="text" value={invoiceData.sellerCity} onChange={handleChange} />
             </div>
           </CardContent>
         </Card>
@@ -161,14 +183,30 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
           <CardHeader>
             <CardTitle>Dane nabywcy</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
+          <CardContent className="space-y-2 text-sm">
             <div>
               <label>Nazwa</label>
               <Input name="buyerName" type="text" value={invoiceData.buyerName} onChange={handleChange} />
             </div>
             <div>
-              <label>Adres</label>
-              <Input name="buyerAddress" type="text" value={invoiceData.buyerAddress} onChange={handleChange} />
+              <label>NIP</label>
+              <Input name="buyerNIP" type="text" value={invoiceData.buyerNIP} onChange={handleChange} />
+            </div>
+            <div>
+              <label>Numer konta</label>
+              <Input name="buyerBankAccountNumber" type="text" value={invoiceData.buyerBankAccountNumber} onChange={handleChange} />
+            </div>
+            <div>
+              <label>Ulica i numer</label>
+              <Input name="buyerStreetWithNumber" type="text" value={invoiceData.buyerStreetWithNumber} onChange={handleChange} />
+            </div>
+            <div>
+              <label>Kod pocztowy</label>
+              <Input name="buyerZipcode" type="text" value={invoiceData.buyerZipcode} onChange={handleChange} />
+            </div>
+            <div>
+              <label>Miejscowość</label>
+              <Input name="buyerCity" type="text" value={invoiceData.buyerCity} onChange={handleChange} />
             </div>
           </CardContent>
         </Card>
@@ -179,7 +217,7 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
           <CardHeader>
             <CardTitle>Pozycje na fakturze</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="text-sm">
             {invoiceItems.map((invoiceItem, index) => (
               <InvoiceFormItem
                 invoiceItemData={invoiceItem}
