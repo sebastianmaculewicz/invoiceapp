@@ -151,6 +151,14 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
               <label>Data sprzedaży</label>
               <Input name="invoiceSaleDate" type="date" value={invoiceData.invoiceSaleDate} onChange={handleChange} />
             </div>
+            <div>
+              <label>Sposób płatności</label>
+              <Input name="invoicePaymentMethod" type="text" value={invoiceData.invoicePaymentMethod} onChange={handleChange} />
+            </div>
+            <div>
+              <label>Termin płatności</label>
+              <Input name="invoicePaymentDate" type="text" value={invoiceData.invoicePaymentDate} onChange={handleChange} />
+            </div>
           </CardContent>
         </Card>
       </section>
@@ -237,10 +245,10 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
                 handleBlur={handleBlur}
               />
             ))}
-            <Button className="mt-2" variant={"secondary"} onClick={addInvoiceItem}>
+            <Button className="mt-2 ml-8" variant={"secondary"} onClick={addInvoiceItem}>
               + Dodaj pozycję
             </Button>
-            <InvoiceSummary invoiceItems={invoiceItems} />
+            <InvoiceSummary invoiceItems={invoiceItems} printView={false} />
           </CardContent>
         </Card>
       </section>

@@ -2,8 +2,13 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import Header from "./components/Header";
 import InvoiceForm from "./components/InvoiceForm";
-import { extractSellersAndBuyers, formatDate, generateInvoiceNumber } from "./lib/utils";
+import {
+  extractSellersAndBuyers,
+  formatDate,
+  generateInvoiceNumber,
+} from "./lib/utils";
 import { InvoiceData, InvoiceItem } from "./types";
+import PrintView from "./components/PrintView";
 
 function App() {
   const [invoiceData, setInvoiceData] = useState<InvoiceData>({
@@ -11,6 +16,8 @@ function App() {
     invoiceIssueDate: formatDate(new Date()),
     invoiceIssuePlace: "",
     invoiceSaleDate: formatDate(new Date()),
+    invoicePaymentMethod: "Przelew",
+    invoicePaymentDate: "14 dni",
     sellerID: -1,
     sellerName: "",
     sellerNIP: "",
@@ -54,38 +61,43 @@ function App() {
       setInvoiceData(specificInvoiceData);
       setInvoiceItems(specificInvoiceData.invoiceItems);
       console.log(specificInvoiceData);
-    }    
+    }
   }
 
-  function loadSpecificSeller(e: React.MouseEvent<HTMLButtonElement>) {    
-    const sellerID = e.currentTarget.closest(".seller-item")?.getAttribute("data-seller-id");
+  function loadSpecificSeller(e: React.MouseEvent<HTMLButtonElement>) {
+    const sellerID = e.currentTarget
+      .closest(".seller-item")
+      ?.getAttribute("data-seller-id");
 
-    if(!sellerID) return;
+    if (!sellerID) return;
     const sellerData = sellersData[sellerID as keyof typeof sellersData];
-    
-    setInvoiceData(prevData => ({
+
+    setInvoiceData((prevData) => ({
       ...prevData,
-      ...sellerData
+      ...sellerData,
+      invoiceIssuePlace: sellerData.sellerCity,
     }));
   }
 
   function loadSpecificBuyer(e: React.MouseEvent<HTMLButtonElement>) {
-    const buyerID = e.currentTarget.closest(".buyer-item")?.getAttribute("data-buyer-id");
+    const buyerID = e.currentTarget
+      .closest(".buyer-item")
+      ?.getAttribute("data-buyer-id");
 
-    if(!buyerID) return;
+    if (!buyerID) return;
     const buyerData = buyersData[buyerID as keyof typeof buyersData];
-    
-    setInvoiceData(prevData => ({
+
+    setInvoiceData((prevData) => ({
       ...prevData,
-      ...buyerData
+      ...buyerData,
     }));
   }
-  
+
   useEffect(() => {
     const savedInvoiceData = JSON.parse(
       localStorage.getItem("invoiceData") as string
     );
-    const {sellers, buyers} = extractSellersAndBuyers(savedInvoiceData);
+    const { sellers, buyers } = extractSellersAndBuyers(savedInvoiceData);
     const invoiceNumber = generateInvoiceNumber(savedInvoiceData, new Date());
 
     setInvoiceData({ ...invoiceData, invoiceNumber });
@@ -94,9 +106,9 @@ function App() {
     setBuyersData(Object.values(buyers));
   }, []);
 
-
   return (
     <>
+      <PrintView invoiceData={invoiceData} />
       <Header
         savedInvoiceData={savedInvoiceData}
         loadSpecificInvoice={loadSpecificInvoice}
@@ -112,6 +124,7 @@ function App() {
         loadSpecificSeller={loadSpecificSeller}
         loadSpecificBuyer={loadSpecificBuyer}
       />
+      
     </>
   );
 }

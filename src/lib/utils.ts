@@ -62,6 +62,7 @@ export function extractSellersAndBuyers(data: Record<string, InvoiceData>) {
 
       // Extract buyer information
       const buyerInfo: BuyerInfo = {
+        buyerID: invoice.buyerID,
         buyerName: invoice.buyerName,
         buyerNIP: invoice.buyerNIP,
         buyerBankAccountNumber: invoice.buyerBankAccountNumber,
@@ -74,4 +75,70 @@ export function extractSellersAndBuyers(data: Record<string, InvoiceData>) {
   }
 
   return { sellers, buyers };
+}
+
+export function convertNumberToWords(num: number) {
+  const units = ["", "jeden", "dwa", "trzy", "cztery", "pięć", "sześć", "siedem", "osiem", "dziewięć"];
+  const teens = ["dziesięć", "jedenaście", "dwanaście", "trzynaście", "czternaście", "piętnaście", "szesnaście", "siedemnaście", "osiemnaście", "dziewiętnaście"];
+  const tens = ["", "dziesięć", "dwadzieścia", "trzydzieści", "czterdzieści", "pięćdziesiąt", "sześćdziesiąt", "siedemdziesiąt", "osiemdziesiąt", "dziewięćdziesiąt"];
+  const hundreds = ["", "sto", "dwieście", "trzysta", "czterysta", "pięćset", "sześćset", "siedemset", "osiemset", "dziewięćset"];
+
+    if (num === 0) return "zero";
+
+    function getUnits(n: number) {
+        return units[n];
+    }
+
+    function getTeens(n: number) {
+        return teens[n - 10];
+    }
+
+    function getTens(n: number) {
+        if (n < 10) return getUnits(n);
+        if (n < 20) return getTeens(n);
+        const unit = n % 10;
+        const ten = Math.floor(n / 10);
+        return tens[ten] + (unit ? " " + getUnits(unit) : "");
+    }
+
+    function getHundreds(n: number) {
+        const hundred = Math.floor(n / 100);
+        const rest = n % 100;
+        return hundreds[hundred] + (rest ? " " + getTens(rest) : "");
+    }
+
+    function getThousands(n: number) {
+        const thousand = Math.floor(n / 1000);
+        const rest = n % 1000;
+        let thousandWord = "";
+
+        if (thousand === 1) {
+            thousandWord = "tysiąc";
+        } else if (thousand >= 2 && thousand <= 4) {
+            thousandWord = getUnits(thousand) + " tysiące";
+        } else {
+            thousandWord = getTens(thousand) + " tysięcy";
+        }
+
+        return thousandWord + (rest ? " " + getHundreds(rest) : "");
+    }
+
+    function convertToWords(n: number) {
+        if (n < 100) {
+            return getTens(n);
+        } else if (n < 1000) {
+            return getHundreds(n);
+        } else {
+            return getThousands(n);
+        }
+    }
+
+    function parseNumber(num: number) {
+        const [zloty, grosz] = num.toFixed(2).split('.').map(Number);
+        const zlotyWords = convertToWords(zloty) + " PLN";
+        const groszWords = grosz ? convertToWords(grosz) + " gr" : "";
+        return zlotyWords + (groszWords ? " " + groszWords : "");
+    }
+
+    return parseNumber(num);
 }

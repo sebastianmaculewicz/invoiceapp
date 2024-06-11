@@ -13,6 +13,8 @@ export interface InvoiceData {
   invoiceIssueDate: string;
   invoiceIssuePlace: string;
   invoiceSaleDate: string;
+  invoicePaymentMethod: string;
+  invoicePaymentDate: string;
   sellerID: number;
   sellerName: string;
   sellerNIP: string;

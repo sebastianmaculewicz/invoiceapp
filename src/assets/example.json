@@ -4,6 +4,8 @@
         "invoiceIssueDate": "2024-06-11",
         "invoiceIssuePlace": "Szczecin",
         "invoiceSaleDate": "2024-06-11",
+        "invoicePaymentMethod": "Przelew",
+        "invoicePaymentDate": "14 dni",
         "sellerID": 0,
         "sellerName": "Jan Kowalski",
         "sellerNIP": "851 111 22 33",
@@ -28,12 +30,20 @@
             "serviceValueGross": "2459,98"
         }, {
             "id": 2,
-            "serviceName": "Stolik na kawę",
+            "serviceName": "Stolik do kawy",
             "serviceQuantity": "1",
             "servicePriceNet": "1299,99",
             "serviceTax": "23",
             "serviceValueNet": "1299,99",
             "serviceValueGross": "1598,99"
+        }, {
+            "id": 3,
+            "serviceName": "Książka",
+            "serviceQuantity": "1",
+            "servicePriceNet": "59,99",
+            "serviceTax": "8",
+            "serviceValueNet": "59,99",
+            "serviceValueGross": "64,79"
         }]
     },
     "2/06/2024": {
@@ -41,6 +51,8 @@
         "invoiceIssueDate": "2024-06-03",
         "invoiceIssuePlace": "Lublin",
         "invoiceSaleDate": "2024-06-03",
+        "invoicePaymentMethod": "Gotówka",
+        "invoicePaymentDate": "7 dni",
         "sellerID": 1,
         "sellerName": "Martyna Wójcik",
         "sellerNIP": "851 333 44 55",
@@ -57,7 +69,7 @@
         "buyerCity": "Grudziądz",
         "invoiceItems": [{
             "id": 1,
-            "serviceName": "Usługa fryzjerska",
+            "serviceName": "Usługa fryzjerska (krótkie włosy)",
             "serviceQuantity": "1",
             "servicePriceNet": "56,91",
             "serviceTax": "23",
@@ -78,6 +90,8 @@
         "invoiceIssueDate": "2024-06-03",
         "invoiceIssuePlace": "Lublin",
         "invoiceSaleDate": "2024-06-03",
+        "invoicePaymentMethod": "Przelew",
+        "invoicePaymentDate": "14 dni",
         "sellerID": 1,
         "sellerName": "Martyna Wójcik",
         "sellerNIP": "851 333 44 55",
@@ -94,12 +108,12 @@
         "buyerCity": "Grudziądz",
         "invoiceItems": [{
             "id": 1,
-            "serviceName": "Usługa fryzjerska",
+            "serviceName": "Usługa fryzjerska (długie włosy)",
             "serviceQuantity": "1",
-            "servicePriceNet": "56,91",
+            "servicePriceNet": "89,43",
             "serviceTax": "23",
-            "serviceValueNet": "56,91",
-            "serviceValueGross": "70,00"
+            "serviceValueNet": "89,43",
+            "serviceValueGross": "110,00"
         }, {
             "id": 2,
             "serviceName": "Mycie włosów",
@@ -115,6 +129,8 @@
         "invoiceIssueDate": "2024-06-03",
         "invoiceIssuePlace": "Lublin",
         "invoiceSaleDate": "2024-06-03",
+        "invoicePaymentMethod": "Gotówka",
+        "invoicePaymentDate": "14 dni",
         "sellerID": 1,
         "sellerName": "Martyna Wójcik",
         "sellerNIP": "851 333 44 55",
@@ -131,12 +147,12 @@
         "buyerCity": "Grudziądz",
         "invoiceItems": [{
             "id": 1,
-            "serviceName": "Usługa fryzjerska",
+            "serviceName": "Usługa fryzjerska (farbowanie)",
             "serviceQuantity": "1",
-            "servicePriceNet": "56,91",
+            "servicePriceNet": "121,95",
             "serviceTax": "23",
-            "serviceValueNet": "56,91",
-            "serviceValueGross": "70,00"
+            "serviceValueNet": "121,95",
+            "serviceValueGross": "150,00"
         }, {
             "id": 2,
             "serviceName": "Mycie włosów",
