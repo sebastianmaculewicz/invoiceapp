@@ -5,31 +5,31 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
+import { BuyerInfo } from "@/types";
 
-export default function SavedBuyers({
-  buyersData,
-  loadSpecificBuyer,
-}: {
-  buyersData: any;
-  loadSpecificBuyer: any;
-}) {
+interface SavedBuyersProps {
+  buyersData: BuyerInfo[];
+  loadSpecificBuyer: (e: React.MouseEvent<HTMLDivElement>) => void;
+}
+
+export default function SavedBuyers({ buyersData, loadSpecificBuyer }: SavedBuyersProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant={"outline"} disabled={!buyersData ? true : false}>
+        <Button variant={"outline"} disabled={!buyersData || buyersData.length === 0}>
           Zapisani nabywcy
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="max-h-[50vh] overflow-y-auto">
         {buyersData &&
-          Object.keys(buyersData).map((buyer, index) => (
+          buyersData.map((buyer, index) => (
             <DropdownMenuItem
               key={index}
-              data-buyer-id={buyer}
+              data-buyer-id={buyer.buyerID}
               className="buyer-item cursor-pointer"
               onClick={loadSpecificBuyer}
             >
-              {buyersData[buyer].buyerName}
+              {buyer.buyerName}
             </DropdownMenuItem>
           ))}
       </DropdownMenuContent>

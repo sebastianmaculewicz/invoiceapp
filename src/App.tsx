@@ -7,7 +7,7 @@ import {
   formatDate,
   generateInvoiceNumber,
 } from "./lib/utils";
-import { InvoiceData, InvoiceItem } from "./types";
+import { InvoiceData, InvoiceItem, SellerInfo, BuyerInfo } from "./types";
 import PrintView from "./components/PrintView";
 
 function App() {
@@ -47,11 +47,11 @@ function App() {
     },
   ]);
 
-  const [sellersData, setSellersData] = useState<any[]>([]);
-  const [buyersData, setBuyersData] = useState<any[]>([]);
-  const [savedInvoiceData, setSavedInvoiceData] = useState<any>({});
+  const [sellersData, setSellersData] = useState<SellerInfo[]>([]);
+  const [buyersData, setBuyersData] = useState<BuyerInfo[]>([]);
+  const [savedInvoiceData, setSavedInvoiceData] = useState<Record<string, InvoiceData>>({});
 
-  function loadSpecificInvoice(e: React.MouseEvent<HTMLButtonElement>) {
+  function loadSpecificInvoice(e: React.MouseEvent<HTMLDivElement>) {
     const invoiceNumber = e.currentTarget
       .closest(".invoice-item")
       ?.getAttribute("data-invoice-number");
@@ -64,33 +64,37 @@ function App() {
     }
   }
 
-  function loadSpecificSeller(e: React.MouseEvent<HTMLButtonElement>) {
+  function loadSpecificSeller(e: React.MouseEvent<HTMLDivElement>) {
     const sellerID = e.currentTarget
       .closest(".seller-item")
       ?.getAttribute("data-seller-id");
 
     if (!sellerID) return;
-    const sellerData = sellersData[sellerID as keyof typeof sellersData];
+    const sellerData = sellersData.find((seller) => seller.sellerID === Number(sellerID));
 
-    setInvoiceData((prevData) => ({
-      ...prevData,
-      ...sellerData,
-      invoiceIssuePlace: sellerData.sellerCity,
-    }));
+    if (sellerData) {
+      setInvoiceData((prevData) => ({
+        ...prevData,
+        ...sellerData,
+        invoiceIssuePlace: sellerData.sellerCity,
+      }));
+    }
   }
 
-  function loadSpecificBuyer(e: React.MouseEvent<HTMLButtonElement>) {
+  function loadSpecificBuyer(e: React.MouseEvent<HTMLDivElement>) {
     const buyerID = e.currentTarget
       .closest(".buyer-item")
       ?.getAttribute("data-buyer-id");
 
     if (!buyerID) return;
-    const buyerData = buyersData[buyerID as keyof typeof buyersData];
+    const buyerData = buyersData.find((buyer) => buyer.buyerID === Number(buyerID));
 
-    setInvoiceData((prevData) => ({
-      ...prevData,
-      ...buyerData,
-    }));
+    if (buyerData) {
+      setInvoiceData((prevData) => ({
+        ...prevData,
+        ...buyerData,
+      }));
+    }
   }
 
   useEffect(() => {
@@ -124,7 +128,6 @@ function App() {
         loadSpecificSeller={loadSpecificSeller}
         loadSpecificBuyer={loadSpecificBuyer}
       />
-      
     </>
   );
 }

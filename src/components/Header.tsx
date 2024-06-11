@@ -1,13 +1,8 @@
 import SavedInvoices from "./SavedInvoices";
 import { Button } from "./ui/button";
+import { InvoiceDataProps } from "@/types";
 
-export default function Header({
-  savedInvoiceData,
-  loadSpecificInvoice,
-}: {
-  savedInvoiceData: any;
-  loadSpecificInvoice: any;
-}) {
+export default function Header({ savedInvoiceData, loadSpecificInvoice }: InvoiceDataProps) {
   return (
     <header className="flex justify-between items-center my-5">
       <h1 className="text-3xl">Invoice App</h1>

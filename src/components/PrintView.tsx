@@ -68,7 +68,9 @@ export default function PrintView({
             <TableHeader>
               <TableRow>
                 <TableHead className="text-black">LP</TableHead>
-                <TableHead className="text-black">Nazwa towaru / usługi</TableHead>
+                <TableHead className="text-black">
+                  Nazwa towaru / usługi
+                </TableHead>
                 <TableHead className="text-black">Ilość</TableHead>
                 <TableHead className="text-black">Cena netto</TableHead>
                 <TableHead className="text-black">Podatek</TableHead>
@@ -92,7 +94,10 @@ export default function PrintView({
           </Table>
         </div>
       </div>
-      <InvoiceSummary invoiceItems={invoiceData.invoiceItems} printView={true} />
+      <InvoiceSummary
+        invoiceItems={invoiceData.invoiceItems}
+        printView={true}
+      />
     </div>
   );
 }

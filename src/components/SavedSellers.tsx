@@ -5,31 +5,34 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
+import { SellerInfo } from "@/types";
+
+interface SavedSellersProps {
+  sellersData: SellerInfo[];
+  loadSpecificSeller: (e: React.MouseEvent<HTMLDivElement>) => void;
+}
 
 export default function SavedSellers({
   sellersData,
   loadSpecificSeller,
-}: {
-  sellersData: any;
-  loadSpecificSeller: any;
-}) {
+}: SavedSellersProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant={"outline"} disabled={!sellersData ? true : false}>
+        <Button variant={"outline"} disabled={!sellersData || sellersData.length === 0}>
           Zapisani sprzedawcy
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="max-h-[50vh] overflow-y-auto">
         {sellersData &&
-          Object.keys(sellersData).map((seller, index) => (
+          sellersData.map((seller, index) => (
             <DropdownMenuItem
               key={index}
-              data-seller-id={seller}
+              data-seller-id={seller.sellerID}
               className="seller-item cursor-pointer"
               onClick={loadSpecificSeller}
             >
-              {sellersData[seller].sellerName}
+              {seller.sellerName}
             </DropdownMenuItem>
           ))}
       </DropdownMenuContent>

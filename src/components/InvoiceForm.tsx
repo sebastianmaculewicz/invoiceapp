@@ -14,8 +14,6 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     
-    console.log(name, value);
-
     if (name in invoiceData) {
       let updatedInvoiceData = { ...invoiceData, [name]: value };
 

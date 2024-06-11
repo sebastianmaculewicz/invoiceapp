@@ -1,7 +1,5 @@
 import {
-  Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -9,10 +7,10 @@ import {
 } from "@/components/ui/form";
 
 import { Input } from "@/components/ui/input";
+import { InvoiceItemProps } from "@/types";
 import { Trash2 } from "lucide-react";
 
-//TODO: specify form type
-export default function InvoiceItem({form: form}: {form: any}) {
+export default function InvoiceItem({form} : InvoiceItemProps) {
   return (
     <div className="grid grid-cols-[50%_repeat(5,_1fr)_25px] gap-2 items-end">
       <FormField

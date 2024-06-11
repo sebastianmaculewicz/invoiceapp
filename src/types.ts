@@ -1,3 +1,5 @@
+import { UseFormReturn } from "react-hook-form";
+
 export interface InvoiceItem {
   id: number;
   serviceName: string;
@@ -38,10 +40,10 @@ export interface InvoiceFormProps {
   invoiceData: InvoiceData;
   setInvoiceItems: React.Dispatch<React.SetStateAction<InvoiceItem[]>>;
   invoiceItems: InvoiceItem[];
-  sellersData: any[];
-  buyersData: any[];
-  loadSpecificSeller: (e: React.MouseEvent<HTMLButtonElement>) => void;
-  loadSpecificBuyer: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  sellersData: SellerInfo[];
+  buyersData: BuyerInfo[];
+  loadSpecificSeller: (e: React.MouseEvent<HTMLDivElement>) => void;
+  loadSpecificBuyer: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 export interface InvoiceFormItemProps {
@@ -78,4 +80,23 @@ export interface Sellers {
 
 export interface Buyers {
   [key: string]: BuyerInfo;
+}
+
+export interface InvoiceDataProps {
+  savedInvoiceData: Record<string, InvoiceData>;
+  loadSpecificInvoice: (e: React.MouseEvent<HTMLDivElement>) => void;
+}
+
+export interface SavedSellersProps {
+  sellersData: SellerInfo[];
+  loadSpecificSeller: (e: React.MouseEvent<HTMLDivElement>) => void;
+}
+
+export interface SavedBuyersProps {
+  buyersData: Record<string, BuyerInfo>;
+  loadSpecificBuyer: (e: React.MouseEvent<HTMLDivElement>) => void;
+}
+
+export interface InvoiceItemProps {
+  form: UseFormReturn<FormData>;
 }
