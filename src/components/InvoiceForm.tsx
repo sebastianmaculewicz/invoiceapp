@@ -151,6 +151,9 @@ export default function InvoiceForm({
         key !== "sellerID" &&
         key !== "buyerID"
       ) {
+        toast.error(
+          "Uzupełnij puste pola"
+        );
         return;
       }
     }
