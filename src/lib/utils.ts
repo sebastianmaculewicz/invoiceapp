@@ -205,7 +205,7 @@ export function validateNIP(nip: string) {
 }
 
 export function validateStreetAddress(address: string) {
-  const addressPattern = /^[a-zA-Z\s]+\s+\d+.*$/;
+  const addressPattern = /^[a-zA-ZąćęłńóśźżĄĆĘŁŃÓŚŹŻ\s]+\s+\d+.*$/;
 
   return addressPattern.test(address);
 }

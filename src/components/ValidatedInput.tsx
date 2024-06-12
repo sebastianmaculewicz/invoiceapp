@@ -34,6 +34,7 @@ const ValidatedInput = ({ name, value, type, onChange, onBlur, formSubmitted }: 
         })
 
         setIsInvalid(true);
+        return;
       }
 
       if(key === "buyerZipcode" && !validateZipCode(value)) {
@@ -42,18 +43,21 @@ const ValidatedInput = ({ name, value, type, onChange, onBlur, formSubmitted }: 
         })
 
         setIsInvalid(true);
+        return;
       }
 
       if(key === "sellerNIP" && !validateNIP(value)) {
         toast.error("Błędny format NIP sprzedawcy");
 
         setIsInvalid(true);
+        return;
       }
 
       if(key === "buyerNIP" && !validateNIP(value)) {
         toast.error("Błędny format NIP nabywcy");
 
         setIsInvalid(true);
+        return;
       }
 
       if(key === "sellerStreetWithNumber" && !validateStreetAddress(value)) {
@@ -62,6 +66,7 @@ const ValidatedInput = ({ name, value, type, onChange, onBlur, formSubmitted }: 
         });
 
         setIsInvalid(true);
+        return;
       }
 
       if(key === "buyerStreetWithNumber" && !validateStreetAddress(value)) {
@@ -70,7 +75,10 @@ const ValidatedInput = ({ name, value, type, onChange, onBlur, formSubmitted }: 
         });
 
         setIsInvalid(true);
+        return;
       }
+
+      setIsInvalid(false);
   };
 
   return (
