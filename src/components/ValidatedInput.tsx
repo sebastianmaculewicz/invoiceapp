@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
+import { validateNIP, validateStreetAddress, validateZipCode } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface ValidatedInputProps {
   name: string;
@@ -12,12 +14,63 @@ interface ValidatedInputProps {
 
 const ValidatedInput = ({ name, value, type, onChange, onBlur, formSubmitted }: ValidatedInputProps) => {
   const [touched, setTouched] = useState<boolean>(false);
+  const [isInvalid, setIsInvalid] = useState<boolean>(false);
 
   const isEmptyOnSubmit = !value && formSubmitted;
   const handleFocus = () => {
     if (!touched) {
       setTouched(true);
     }
+  };
+
+  const handlePersonalDataBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const key = e.target.name;
+    const value = e.target.value;
+
+
+      if(key === "sellerZipcode" && !validateZipCode(value)) {
+        toast.error("Błędny format kodu pocztowego sprzedawcy", {
+          description: "Spodziewany: XX-XXX"
+        })
+
+        setIsInvalid(true);
+      }
+
+      if(key === "buyerZipcode" && !validateZipCode(value)) {
+        toast.error("Błędny format kodu pocztowego nabywcy", {
+          description: "Spodziewany: XX-XXX"
+        })
+
+        setIsInvalid(true);
+      }
+
+      if(key === "sellerNIP" && !validateNIP(value)) {
+        toast.error("Błędny format NIP sprzedawcy");
+
+        setIsInvalid(true);
+      }
+
+      if(key === "buyerNIP" && !validateNIP(value)) {
+        toast.error("Błędny format NIP nabywcy");
+
+        setIsInvalid(true);
+      }
+
+      if(key === "sellerStreetWithNumber" && !validateStreetAddress(value)) {
+        toast.error("Błędny adres sprzedawcy", {
+          description: "Podaj nazwę ulicy i numer"
+        });
+
+        setIsInvalid(true);
+      }
+
+      if(key === "buyerStreetWithNumber" && !validateStreetAddress(value)) {
+        toast.error("Błędny adres nabywcy", {
+          description: "Podaj nazwę ulicy i numer"
+        });
+
+        setIsInvalid(true);
+      }
   };
 
   return (
@@ -27,9 +80,9 @@ const ValidatedInput = ({ name, value, type, onChange, onBlur, formSubmitted }: 
         type={type}
         value={value}
         onChange={onChange}
-        onBlur={onBlur}
+        onBlur={onBlur ? onBlur :handlePersonalDataBlur}
         onFocus={handleFocus}
-        className={isEmptyOnSubmit ? "border-red-500" : ""}
+        className={(isEmptyOnSubmit || isInvalid) ? "border-red-500" : ""}
       />
     </div>
   );

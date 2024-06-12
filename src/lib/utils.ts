@@ -177,8 +177,35 @@ export function convertNumberToWords(num: number) {
     return parseNumber(num);
 }
 
-function validateZipCode(zipCode: string) {
+export function validateZipCode(zipCode: string) {
   const zipCodePattern = /^\d{2}-\d{3}$/;
 
   return zipCodePattern.test(zipCode);
+}
+
+export function validateNIP(nip: string) {
+  const cleanedNIP = nip.replace(/\D/g, '');
+
+  if (cleanedNIP.length !== 10) {
+      return false;
+  }
+
+  const digits = cleanedNIP.split('').map(Number);
+  const weights = [6, 5, 7, 2, 3, 4, 5, 6, 7];
+
+  let checksum = 0;
+  for (let i = 0; i < weights.length; i++) {
+      checksum += digits[i] * weights[i];
+  }
+
+  const controlNumber = checksum % 11;
+
+
+  return controlNumber === digits[9];
+}
+
+export function validateStreetAddress(address: string) {
+  const addressPattern = /^[a-zA-Z\s]+\s+\d+.*$/;
+
+  return addressPattern.test(address);
 }

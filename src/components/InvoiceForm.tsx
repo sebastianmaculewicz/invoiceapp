@@ -143,7 +143,7 @@ export default function InvoiceForm({
     const invoiceDataToSave = {
       [invoiceData.invoiceNumber]: { ...invoiceData, invoiceItems },
     };
-
+    
     for (const key in invoiceData) {
       if (
         invoiceData.hasOwnProperty(key) &&
