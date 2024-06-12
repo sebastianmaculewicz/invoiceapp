@@ -6,46 +6,16 @@ import {
   extractSellersAndBuyers,
   formatDate,
   generateInvoiceNumber,
+  invoiceDefaultData,
+  invoiceDefaultItems,
 } from "./lib/utils";
 import { InvoiceData, InvoiceItem, SellerInfo, BuyerInfo } from "./types";
 import PrintView from "./components/PrintView";
+import { Toaster } from "@/components/ui/sonner"
 
 function App() {
-  const [invoiceData, setInvoiceData] = useState<InvoiceData>({
-    invoiceNumber: "",
-    invoiceIssueDate: formatDate(new Date()),
-    invoiceIssuePlace: "",
-    invoiceSaleDate: formatDate(new Date()),
-    invoicePaymentMethod: "Przelew",
-    invoicePaymentDate: "14 dni",
-    sellerID: -1,
-    sellerName: "",
-    sellerNIP: "",
-    sellerBankAccountNumber: "",
-    sellerStreetWithNumber: "",
-    sellerZipcode: "",
-    sellerCity: "",
-    buyerID: -1,
-    buyerName: "",
-    buyerNIP: "",
-    buyerBankAccountNumber: "",
-    buyerStreetWithNumber: "",
-    buyerZipcode: "",
-    buyerCity: "",
-    invoiceItems: [],
-  });
-
-  const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>([
-    {
-      id: 1,
-      serviceName: "",
-      serviceQuantity: 1,
-      servicePriceNet: "",
-      serviceTax: 23,
-      serviceValueNet: "",
-      serviceValueGross: "",
-    },
-  ]);
+  const [invoiceData, setInvoiceData] = useState<InvoiceData>(invoiceDefaultData);
+  const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>(invoiceDefaultItems);
 
   const [sellersData, setSellersData] = useState<SellerInfo[]>([]);
   const [buyersData, setBuyersData] = useState<BuyerInfo[]>([]);
@@ -97,6 +67,13 @@ function App() {
     }
   }
 
+  const resetForm = () => {
+    const invoiceNumber = generateInvoiceNumber(savedInvoiceData, new Date());
+    
+    setInvoiceData({...invoiceDefaultData, invoiceNumber});
+    setInvoiceItems(invoiceDefaultItems);
+  };
+
   useEffect(() => {
     const savedInvoiceData = JSON.parse(
       localStorage.getItem("invoiceData") as string
@@ -116,8 +93,10 @@ function App() {
       <Header
         savedInvoiceData={savedInvoiceData}
         loadSpecificInvoice={loadSpecificInvoice}
+        resetForm={resetForm}
       />
       <InvoiceForm
+        setSavedInvoiceData={setSavedInvoiceData}
         savedInvoiceData={savedInvoiceData}
         invoiceData={invoiceData}
         setInvoiceData={setInvoiceData}
@@ -128,6 +107,7 @@ function App() {
         loadSpecificSeller={loadSpecificSeller}
         loadSpecificBuyer={loadSpecificBuyer}
       />
+      <Toaster />
     </>
   );
 }

@@ -35,6 +35,7 @@ export interface InvoiceData {
 }
 
 export interface InvoiceFormProps {
+  setSavedInvoiceData: React.Dispatch<React.SetStateAction<Record<string, InvoiceData>>>;
   savedInvoiceData: Record<string, InvoiceData>;
   setInvoiceData: React.Dispatch<React.SetStateAction<InvoiceData>>;
   invoiceData: InvoiceData;
@@ -52,6 +53,7 @@ export interface InvoiceFormItemProps {
   index: number;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleBlur: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  formSubmitted: boolean;
 }
 
 export interface SellerInfo {
@@ -85,6 +87,7 @@ export interface Buyers {
 export interface InvoiceDataProps {
   savedInvoiceData: Record<string, InvoiceData>;
   loadSpecificInvoice: (e: React.MouseEvent<HTMLDivElement>) => void;
+  resetForm?: () => void;
 }
 
 export interface SavedSellersProps {

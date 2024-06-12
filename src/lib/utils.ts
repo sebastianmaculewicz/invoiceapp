@@ -1,10 +1,46 @@
-import { BuyerInfo, Buyers, InvoiceData, SellerInfo, Sellers } from "@/types";
+import { BuyerInfo, Buyers, InvoiceData, InvoiceItem, SellerInfo, Sellers } from "@/types";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export const invoiceDefaultData: InvoiceData = {
+  invoiceNumber: "",
+  invoiceIssueDate: formatDate(new Date()),
+  invoiceIssuePlace: "",
+  invoiceSaleDate: formatDate(new Date()),
+  invoicePaymentMethod: "Przelew",
+  invoicePaymentDate: "14 dni",
+  sellerID: -1,
+  sellerName: "",
+  sellerNIP: "",
+  sellerBankAccountNumber: "",
+  sellerStreetWithNumber: "",
+  sellerZipcode: "",
+  sellerCity: "",
+  buyerID: -1,
+  buyerName: "",
+  buyerNIP: "",
+  buyerBankAccountNumber: "",
+  buyerStreetWithNumber: "",
+  buyerZipcode: "",
+  buyerCity: "",
+  invoiceItems: [],
+}
+
+export const invoiceDefaultItems: InvoiceItem[] = [
+  {
+    id: 1,
+    serviceName: "",
+    serviceQuantity: 1,
+    servicePriceNet: "",
+    serviceTax: 23,
+    serviceValueNet: "",
+    serviceValueGross: "",
+  },
+];
 
 export function formatDate(d: Date) {
   function pad(n: number) {
@@ -48,7 +84,6 @@ export function extractSellersAndBuyers(data: Record<string, InvoiceData>) {
     if (data.hasOwnProperty(invoiceKey)) {
       const invoice = data[invoiceKey];
 
-      // Extract seller information
       const sellerInfo: SellerInfo = {
         sellerID: invoice.sellerID,
         sellerName: invoice.sellerName,
@@ -60,7 +95,6 @@ export function extractSellersAndBuyers(data: Record<string, InvoiceData>) {
       };
       sellers[invoice.sellerID] = sellerInfo;
 
-      // Extract buyer information
       const buyerInfo: BuyerInfo = {
         buyerID: invoice.buyerID,
         buyerName: invoice.buyerName,

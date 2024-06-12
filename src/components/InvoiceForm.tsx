@@ -1,16 +1,19 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import InvoiceFormItem from "./InvoiceFormItem";
-import React from "react";
+import React, { useState } from "react";
 import { InvoiceFormProps } from "@/types";
 import { generateInvoiceNumber } from "@/lib/utils";
 import SavedSellers from "./SavedSellers";
 import SavedBuyers from "./SavedBuyers";
 import InvoiceSummary from "./InvoiceSummary";
+import ValidatedInput from "./ValidatedInput";
+import { toast } from "sonner";
 
-export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceData, setInvoiceItems, invoiceItems, sellersData, buyersData, loadSpecificSeller, loadSpecificBuyer }: InvoiceFormProps) {
-  
+export default function InvoiceForm({ setSavedInvoiceData,savedInvoiceData, setInvoiceData, invoiceData, setInvoiceItems, invoiceItems, sellersData, buyersData, loadSpecificSeller, loadSpecificBuyer }: InvoiceFormProps) {
+  const [emptyField, setEmptyField] = useState<string | null>(null);
+  const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     
@@ -95,11 +98,24 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setFormSubmitted(true);
     const invoiceDataToSave = {
       [invoiceData.invoiceNumber]: { ...invoiceData, invoiceItems },
     };
 
+    for (const key in invoiceData) {
+      if (invoiceData.hasOwnProperty(key) && !invoiceData[key as keyof typeof invoiceData] && key !== 'sellerID' && key !== 'buyerID') {
+        setEmptyField(key);
+        return;
+      }
+    }
+
     localStorage.setItem("invoiceData", JSON.stringify({...savedInvoiceData, ...invoiceDataToSave }));
+    setSavedInvoiceData({...savedInvoiceData, ...invoiceDataToSave });
+
+    toast("Zapisano fakturę", {
+      description: invoiceData.invoiceNumber,
+    });
   };
 
   const addInvoiceItem = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -135,27 +151,27 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
           <CardContent className="lg:flex lg:gap-2 lg:space-y-0 items-start text-sm space-y-2">
             <div>
               <label>Numer</label>
-              <Input name="invoiceNumber" type="text" value={invoiceData.invoiceNumber} onChange={handleChange} />
+              <ValidatedInput name="invoiceNumber" type="text" value={invoiceData.invoiceNumber} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
             <div>
               <label>Data wystawienia</label>
-              <Input name="invoiceIssueDate" type="date" value={invoiceData.invoiceIssueDate} onChange={handleChange} />
+              <ValidatedInput name="invoiceIssueDate" type="date" value={invoiceData.invoiceIssueDate} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
             <div>
               <label>Miejsce wystawienia</label>
-              <Input name="invoiceIssuePlace" type="text" value={invoiceData.invoiceIssuePlace} onChange={handleChange} />
+              <ValidatedInput name="invoiceIssuePlace" type="text" value={invoiceData.invoiceIssuePlace} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
             <div>
               <label>Data sprzedaży</label>
-              <Input name="invoiceSaleDate" type="date" value={invoiceData.invoiceSaleDate} onChange={handleChange} />
+              <ValidatedInput name="invoiceSaleDate" type="date" value={invoiceData.invoiceSaleDate} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
             <div>
               <label>Sposób płatności</label>
-              <Input name="invoicePaymentMethod" type="text" value={invoiceData.invoicePaymentMethod} onChange={handleChange} />
+              <ValidatedInput name="invoicePaymentMethod" type="text" value={invoiceData.invoicePaymentMethod} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
             <div>
               <label>Termin płatności</label>
-              <Input name="invoicePaymentDate" type="text" value={invoiceData.invoicePaymentDate} onChange={handleChange} />
+              <ValidatedInput name="invoicePaymentDate" type="text" value={invoiceData.invoicePaymentDate} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
           </CardContent>
         </Card>
@@ -169,27 +185,27 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
           <CardContent className="space-y-2 text-sm">
             <div>
               <label>Nazwa</label>
-              <Input name="sellerName" type="text" value={invoiceData.sellerName} onChange={handleChange} />
+              <ValidatedInput name="sellerName" type="text" value={invoiceData.sellerName} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
             <div>
               <label>NIP</label>
-              <Input name="sellerNIP" type="text" value={invoiceData.sellerNIP} onChange={handleChange} />
+              <ValidatedInput name="sellerNIP" type="text" value={invoiceData.sellerNIP} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
             <div>
               <label>Numer konta</label>
-              <Input name="sellerBankAccountNumber" type="text" value={invoiceData.sellerBankAccountNumber} onChange={handleChange} />
+              <ValidatedInput name="sellerBankAccountNumber" type="text" value={invoiceData.sellerBankAccountNumber} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
             <div>
               <label>Ulica i numer</label>
-              <Input name="sellerStreetWithNumber" type="text" value={invoiceData.sellerStreetWithNumber} onChange={handleChange} />
+              <ValidatedInput name="sellerStreetWithNumber" type="text" value={invoiceData.sellerStreetWithNumber} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
             <div>
               <label>Kod pocztowy</label>
-              <Input name="sellerZipcode" type="text" value={invoiceData.sellerZipcode} onChange={handleChange} />
+              <ValidatedInput name="sellerZipcode" type="text" value={invoiceData.sellerZipcode} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
             <div>
               <label>Miejscowość</label>
-              <Input name="sellerCity" type="text" value={invoiceData.sellerCity} onChange={handleChange} />
+              <ValidatedInput name="sellerCity" type="text" value={invoiceData.sellerCity} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
           </CardContent>
         </Card>
@@ -201,27 +217,27 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
           <CardContent className="space-y-2 text-sm">
             <div>
               <label>Nazwa</label>
-              <Input name="buyerName" type="text" value={invoiceData.buyerName} onChange={handleChange} />
+              <ValidatedInput name="buyerName" type="text" value={invoiceData.buyerName} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
             <div>
               <label>NIP</label>
-              <Input name="buyerNIP" type="text" value={invoiceData.buyerNIP} onChange={handleChange} />
+              <ValidatedInput name="buyerNIP" type="text" value={invoiceData.buyerNIP} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
             <div>
               <label>Numer konta</label>
-              <Input name="buyerBankAccountNumber" type="text" value={invoiceData.buyerBankAccountNumber} onChange={handleChange} />
+              <ValidatedInput name="buyerBankAccountNumber" type="text" value={invoiceData.buyerBankAccountNumber} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
             <div>
               <label>Ulica i numer</label>
-              <Input name="buyerStreetWithNumber" type="text" value={invoiceData.buyerStreetWithNumber} onChange={handleChange} />
+              <ValidatedInput name="buyerStreetWithNumber" type="text" value={invoiceData.buyerStreetWithNumber} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
             <div>
               <label>Kod pocztowy</label>
-              <Input name="buyerZipcode" type="text" value={invoiceData.buyerZipcode} onChange={handleChange} />
+              <ValidatedInput name="buyerZipcode" type="text" value={invoiceData.buyerZipcode} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
             <div>
               <label>Miejscowość</label>
-              <Input name="buyerCity" type="text" value={invoiceData.buyerCity} onChange={handleChange} />
+              <ValidatedInput name="buyerCity" type="text" value={invoiceData.buyerCity} onChange={handleChange} formSubmitted={formSubmitted} />
             </div>
           </CardContent>
         </Card>
@@ -241,6 +257,7 @@ export default function InvoiceForm({ savedInvoiceData, setInvoiceData, invoiceD
                 key={index}
                 handleChange={handleChange}
                 handleBlur={handleBlur}
+                formSubmitted={formSubmitted}
               />
             ))}
             <Button className="mt-2 ml-8" variant={"secondary"} onClick={addInvoiceItem}>
