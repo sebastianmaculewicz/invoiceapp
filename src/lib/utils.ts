@@ -176,3 +176,9 @@ export function convertNumberToWords(num: number) {
 
     return parseNumber(num);
 }
+
+function validateZipCode(zipCode: string) {
+  const zipCodePattern = /^\d{2}-\d{3}$/;
+
+  return zipCodePattern.test(zipCode);
+}

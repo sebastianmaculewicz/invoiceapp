@@ -11,6 +11,7 @@ import {
 import { InvoiceData, InvoiceItem, SellerInfo, BuyerInfo } from "./types";
 import PrintView from "./components/PrintView";
 import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner";
 
 function App() {
   const [invoiceData, setInvoiceData] = useState<InvoiceData>(invoiceDefaultData);
@@ -31,6 +32,8 @@ function App() {
       setInvoiceData(specificInvoiceData);
       setInvoiceItems(specificInvoiceData.invoiceItems);
       setIsFormSaved(true);
+
+      toast.success("Wczytano dane faktury");
     }
   }
 
@@ -48,6 +51,8 @@ function App() {
         ...sellerData,
         invoiceIssuePlace: sellerData.sellerCity,
       }));
+
+      toast.success("Wczytano dane sprzedawcy");
     }
   }
 
@@ -64,6 +69,8 @@ function App() {
         ...prevData,
         ...buyerData,
       }));
+
+      toast.success("Wczytano dane nabywcy");
     }
   }
 

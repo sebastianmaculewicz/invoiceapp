@@ -1,9 +1,8 @@
 import SavedInvoices from "./SavedInvoices";
 import { Button } from "./ui/button";
 import { InvoiceDataProps } from "@/types";
-import PrintModeSwitch from "./PrintModeSwitch";
-import PrintInvoiceButton from "./PrintInvoiceButton";
 import { FilePlus2 } from "lucide-react";
+import PrintSection from "./PrintSection";
 
 export default function Header({
   savedInvoicesData,
@@ -14,18 +13,18 @@ export default function Header({
   isFormSaved,
 }: InvoiceDataProps) {
   return (
-    <header className="flex justify-between items-center my-5">
+    <header className="lg:flex-row flex justify-between items-center my-5 flex-col">
       <h1 className="text-3xl">Invoice App</h1>
-      <div className="flex gap-2">
-        {typeof printMode != "undefined" && setPrintMode && (
-          <PrintModeSwitch printMode={printMode} setPrintMode={setPrintMode} />
-        )}
-        {typeof isFormSaved != "undefined" && setPrintMode && (
-          <PrintInvoiceButton
-            isFormSaved={isFormSaved}
-            setPrintMode={setPrintMode}
-          />
-        )}
+      <div className="lg:flex lg:gap-2 lg:mt-0 lg:w-fit grid grid-cols-1 gap-2 mt-5 w-full">
+        {typeof printMode != "undefined" &&
+          setPrintMode &&
+          typeof isFormSaved != "undefined" && (
+            <PrintSection
+              printMode={printMode}
+              setPrintMode={setPrintMode}
+              isFormSaved={isFormSaved}
+            />
+          )}
         <SavedInvoices
           savedInvoicesData={savedInvoicesData}
           loadSpecificInvoice={loadSpecificInvoice}

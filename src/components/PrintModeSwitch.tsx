@@ -7,7 +7,7 @@ export default function PrintModeSwitch({ printMode, setPrintMode }: PrintModeSw
   };
 
   return (
-    <div className="flex items-center gap-2 mr-5">
+    <div className="lg:my-0 flex items-center gap-2 mr-5 my-2 justify-center">
       <Switch id="print-mode" checked={printMode} onCheckedChange={togglePrintMode} />
       <label
         htmlFor="print-mode"

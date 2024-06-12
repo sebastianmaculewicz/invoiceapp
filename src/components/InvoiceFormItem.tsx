@@ -1,5 +1,5 @@
 import ValidatedInput from "./ValidatedInput";
-import { Trash2 } from "lucide-react";
+import { X } from "lucide-react";
 import { InvoiceFormItemProps } from "@/types";
 
 export default function InvoiceFormItem({ invoiceItemData, removeInvoiceItem, handleChange, handleBlur, formSubmitted }: InvoiceFormItemProps) {
@@ -31,9 +31,9 @@ export default function InvoiceFormItem({ invoiceItemData, removeInvoiceItem, ha
           <label>Wartość brutto</label>
           <ValidatedInput name="serviceValueGross" type="text" value={invoiceItemData.serviceValueGross} onBlur={handleBlur} onChange={handleChange} formSubmitted={formSubmitted} />
         </div>
-        <div className="lg:top-auto lg:bottom-1.5 lg:-right-2 absolute right-0 -top-1">
+        <div className="lg:top-auto lg:bottom-1.5 absolute right-0 -top-1">
           <button onClick={removeInvoiceItem}>
-            <Trash2 color="#666" />
+            <X color="#666" size={20} />
           </button>
         </div>
       </div>

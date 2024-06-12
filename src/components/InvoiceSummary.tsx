@@ -37,7 +37,7 @@ export default function InvoiceSummary({
   );
 
   return (
-    <section id="invoice_summary" className="flex justify-end gap-5">
+    <section id="invoice_summary" className="flex lg:justify-end lg:mt-0 gap-5 justify-center mt-5">
       {printView ? (
         <div className="print-view grid grid-cols-2 items-center gap-5 w-full">
           <div>

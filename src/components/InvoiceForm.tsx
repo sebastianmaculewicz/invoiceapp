@@ -9,32 +9,57 @@ import SavedBuyers from "./SavedBuyers";
 import InvoiceSummary from "./InvoiceSummary";
 import ValidatedInput from "./ValidatedInput";
 import { toast } from "sonner";
+import { Plus } from "lucide-react";
 
-export default function InvoiceForm({ setsavedInvoicesData,savedInvoicesData, setInvoiceData, invoiceData, setInvoiceItems, invoiceItems, sellersData, buyersData, loadSpecificSeller, loadSpecificBuyer, setIsFormSaved }: InvoiceFormProps) {
+export default function InvoiceForm({
+  setsavedInvoicesData,
+  savedInvoicesData,
+  setInvoiceData,
+  invoiceData,
+  setInvoiceItems,
+  invoiceItems,
+  sellersData,
+  buyersData,
+  loadSpecificSeller,
+  loadSpecificBuyer,
+  setIsFormSaved,
+}: InvoiceFormProps) {
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    
+
     if (name in invoiceData) {
       let updatedInvoiceData = { ...invoiceData, [name]: value };
 
-      if(name === 'invoiceIssueDate') {
-        updatedInvoiceData = { ...updatedInvoiceData, invoiceNumber: generateInvoiceNumber(savedInvoicesData, new Date(value)), invoiceSaleDate: value };
+      if (name === "invoiceIssueDate") {
+        updatedInvoiceData = {
+          ...updatedInvoiceData,
+          invoiceNumber: generateInvoiceNumber(
+            savedInvoicesData,
+            new Date(value)
+          ),
+          invoiceSaleDate: value,
+        };
       }
 
-      if(updatedInvoiceData.sellerID === -1) {
+      if (updatedInvoiceData.sellerID === -1) {
         updatedInvoiceData.sellerID = sellersData.length;
       }
 
-      if(updatedInvoiceData.buyerID === -1) {
+      if (updatedInvoiceData.buyerID === -1) {
         updatedInvoiceData.buyerID = buyersData.length;
       }
-      
+
       setInvoiceData(updatedInvoiceData);
     } else {
       const updatedInvoiceItems = invoiceItems.map((invoiceItem) => {
-        if (invoiceItem.id === Number(e.currentTarget.closest(".invoice-item")?.getAttribute("data-id"))) {
+        if (
+          invoiceItem.id ===
+          Number(
+            e.currentTarget.closest(".invoice-item")?.getAttribute("data-id")
+          )
+        ) {
           return {
             ...invoiceItem,
             [name]: value,
@@ -50,13 +75,25 @@ export default function InvoiceForm({ setsavedInvoicesData,savedInvoicesData, se
   const handleBlur = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const updatedInvoiceItems = invoiceItems.map((invoiceItem) => {
-      if (invoiceItem.id === Number(e.currentTarget.closest(".invoice-item")?.getAttribute("data-id"))) {
-        let { serviceName, serviceQuantity, servicePriceNet, serviceTax, serviceValueNet, serviceValueGross } = invoiceItem;
+      if (
+        invoiceItem.id ===
+        Number(
+          e.currentTarget.closest(".invoice-item")?.getAttribute("data-id")
+        )
+      ) {
+        let {
+          serviceName,
+          serviceQuantity,
+          servicePriceNet,
+          serviceTax,
+          serviceValueNet,
+          serviceValueGross,
+        } = invoiceItem;
         let quantity = Number(serviceQuantity);
-        let priceNet = Number(servicePriceNet.replace(',', '.'));
+        let priceNet = Number(servicePriceNet.replace(",", "."));
         let tax = Number(serviceTax);
-        let valueNet = Number(serviceValueNet.replace('.', ','));
-        let valueGross = Number(serviceValueGross.replace('.', ','));
+        let valueNet = Number(serviceValueNet.replace(".", ","));
+        let valueGross = Number(serviceValueGross.replace(".", ","));
 
         switch (name) {
           case "serviceName":
@@ -66,17 +103,17 @@ export default function InvoiceForm({ setsavedInvoicesData,savedInvoicesData, se
             quantity = Number(value);
             break;
           case "servicePriceNet":
-            priceNet = Number(value.replace(',', '.'));
+            priceNet = Number(value.replace(",", "."));
             break;
           case "serviceTax":
             tax = Number(value);
             break;
           case "serviceValueNet":
-            valueNet = Number(value);
+            valueNet = Number(value.replace(",", "."));
             priceNet = valueNet / quantity;
             break;
           case "serviceValueGross":
-            valueGross = Number(value);
+            valueGross = Number(value.replace(",", "."));
             priceNet = valueGross / (1 + tax / 100) / quantity;
             break;
         }
@@ -85,9 +122,14 @@ export default function InvoiceForm({ setsavedInvoicesData,savedInvoicesData, se
           ...invoiceItem,
           serviceName,
           serviceQuantity: Number(quantity),
-          servicePriceNet: String(priceNet.toFixed(2)).replace('.', ','),
-          serviceValueNet: String((quantity * priceNet).toFixed(2)).replace('.', ','),
-          serviceValueGross: String((quantity * priceNet * (1 + tax / 100)).toFixed(2)).replace('.', ','),
+          servicePriceNet: String(priceNet.toFixed(2)).replace(".", ","),
+          serviceValueNet: String((quantity * priceNet).toFixed(2)).replace(
+            ".",
+            ","
+          ),
+          serviceValueGross: String(
+            (quantity * priceNet * (1 + tax / 100)).toFixed(2)
+          ).replace(".", ","),
         };
       }
       return invoiceItem;
@@ -103,16 +145,24 @@ export default function InvoiceForm({ setsavedInvoicesData,savedInvoicesData, se
     };
 
     for (const key in invoiceData) {
-      if (invoiceData.hasOwnProperty(key) && !invoiceData[key as keyof typeof invoiceData] && key !== 'sellerID' && key !== 'buyerID') {
+      if (
+        invoiceData.hasOwnProperty(key) &&
+        !invoiceData[key as keyof typeof invoiceData] &&
+        key !== "sellerID" &&
+        key !== "buyerID"
+      ) {
         return;
       }
     }
 
-    localStorage.setItem("invoiceData", JSON.stringify({...savedInvoicesData, ...invoiceDataToSave }));
-    setsavedInvoicesData({...savedInvoicesData, ...invoiceDataToSave });
+    localStorage.setItem(
+      "invoiceData",
+      JSON.stringify({ ...savedInvoicesData, ...invoiceDataToSave })
+    );
+    setsavedInvoicesData({ ...savedInvoicesData, ...invoiceDataToSave });
     setIsFormSaved(true);
 
-    toast("Zapisano fakturę", {
+    toast.success("Zapisano fakturę", {
       description: invoiceData.invoiceNumber,
     });
   };
@@ -136,13 +186,20 @@ export default function InvoiceForm({ setsavedInvoicesData,savedInvoicesData, se
 
   const removeInvoiceItem = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const itemId = Number(e.currentTarget.closest(".invoice-item")?.getAttribute("data-id"));
-    setInvoiceItems(invoiceItems.filter((invoiceItem) => invoiceItem.id !== itemId));
+    const itemId = Number(
+      e.currentTarget.closest(".invoice-item")?.getAttribute("data-id")
+    );
+    setInvoiceItems(
+      invoiceItems.filter((invoiceItem) => invoiceItem.id !== itemId)
+    );
   };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
-      <section id="invoice_data" className="lg:flex lg:justify-center lg:gap-5 text-left">
+      <section
+        id="invoice_data"
+        className="lg:flex lg:justify-center lg:gap-5 text-left"
+      >
         <Card className="flex-grow">
           <CardHeader>
             <CardTitle>Dane faktury</CardTitle>
@@ -150,93 +207,210 @@ export default function InvoiceForm({ setsavedInvoicesData,savedInvoicesData, se
           <CardContent className="lg:flex lg:gap-2 lg:space-y-0 items-start text-sm space-y-2">
             <div>
               <label>Numer</label>
-              <ValidatedInput name="invoiceNumber" type="text" value={invoiceData.invoiceNumber} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="invoiceNumber"
+                type="text"
+                value={invoiceData.invoiceNumber}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
             <div>
               <label>Data wystawienia</label>
-              <ValidatedInput name="invoiceIssueDate" type="date" value={invoiceData.invoiceIssueDate} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="invoiceIssueDate"
+                type="date"
+                value={invoiceData.invoiceIssueDate}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
             <div>
               <label>Miejsce wystawienia</label>
-              <ValidatedInput name="invoiceIssuePlace" type="text" value={invoiceData.invoiceIssuePlace} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="invoiceIssuePlace"
+                type="text"
+                value={invoiceData.invoiceIssuePlace}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
             <div>
               <label>Data sprzedaży</label>
-              <ValidatedInput name="invoiceSaleDate" type="date" value={invoiceData.invoiceSaleDate} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="invoiceSaleDate"
+                type="date"
+                value={invoiceData.invoiceSaleDate}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
             <div>
               <label>Sposób płatności</label>
-              <ValidatedInput name="invoicePaymentMethod" type="text" value={invoiceData.invoicePaymentMethod} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="invoicePaymentMethod"
+                type="text"
+                value={invoiceData.invoicePaymentMethod}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
             <div>
               <label>Termin płatności</label>
-              <ValidatedInput name="invoicePaymentDate" type="text" value={invoiceData.invoicePaymentDate} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="invoicePaymentDate"
+                type="text"
+                value={invoiceData.invoicePaymentDate}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
           </CardContent>
         </Card>
       </section>
-      <section id="address_data" className="lg:flex lg:justify-center lg:gap-5 lg:space-y-0 text-left space-y-5">
+      <section
+        id="address_data"
+        className="lg:flex lg:justify-center lg:gap-5 lg:space-y-0 text-left space-y-5"
+      >
         <Card className="flex-grow">
-          <CardHeader className="flex-row items-center justify-between">
+          <CardHeader className="lg:flex-row lg:gap-0 items-center justify-between flex-col gap-2">
             <CardTitle>Dane sprzedawcy</CardTitle>
-            <SavedSellers sellersData={sellersData} loadSpecificSeller={loadSpecificSeller} />
+            <SavedSellers
+              sellersData={sellersData}
+              loadSpecificSeller={loadSpecificSeller}
+            />
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <div>
               <label>Nazwa</label>
-              <ValidatedInput name="sellerName" type="text" value={invoiceData.sellerName} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="sellerName"
+                type="text"
+                value={invoiceData.sellerName}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
             <div>
               <label>NIP</label>
-              <ValidatedInput name="sellerNIP" type="text" value={invoiceData.sellerNIP} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="sellerNIP"
+                type="text"
+                value={invoiceData.sellerNIP}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
             <div>
               <label>Numer konta</label>
-              <ValidatedInput name="sellerBankAccountNumber" type="text" value={invoiceData.sellerBankAccountNumber} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="sellerBankAccountNumber"
+                type="text"
+                value={invoiceData.sellerBankAccountNumber}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
             <div>
               <label>Ulica i numer</label>
-              <ValidatedInput name="sellerStreetWithNumber" type="text" value={invoiceData.sellerStreetWithNumber} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="sellerStreetWithNumber"
+                type="text"
+                value={invoiceData.sellerStreetWithNumber}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
             <div>
               <label>Kod pocztowy</label>
-              <ValidatedInput name="sellerZipcode" type="text" value={invoiceData.sellerZipcode} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="sellerZipcode"
+                type="text"
+                value={invoiceData.sellerZipcode}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
             <div>
               <label>Miejscowość</label>
-              <ValidatedInput name="sellerCity" type="text" value={invoiceData.sellerCity} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="sellerCity"
+                type="text"
+                value={invoiceData.sellerCity}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
           </CardContent>
         </Card>
         <Card className="flex-grow">
-          <CardHeader className="flex-row items-center justify-between">
+          <CardHeader className="lg:flex-row lg:gap-0 items-center justify-between flex-col gap-2">
             <CardTitle>Dane nabywcy</CardTitle>
-            <SavedBuyers buyersData={buyersData} loadSpecificBuyer={loadSpecificBuyer} />
+            <SavedBuyers
+              buyersData={buyersData}
+              loadSpecificBuyer={loadSpecificBuyer}
+            />
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             <div>
               <label>Nazwa</label>
-              <ValidatedInput name="buyerName" type="text" value={invoiceData.buyerName} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="buyerName"
+                type="text"
+                value={invoiceData.buyerName}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
             <div>
               <label>NIP</label>
-              <ValidatedInput name="buyerNIP" type="text" value={invoiceData.buyerNIP} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="buyerNIP"
+                type="text"
+                value={invoiceData.buyerNIP}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
             <div>
               <label>Numer konta</label>
-              <ValidatedInput name="buyerBankAccountNumber" type="text" value={invoiceData.buyerBankAccountNumber} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="buyerBankAccountNumber"
+                type="text"
+                value={invoiceData.buyerBankAccountNumber}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
             <div>
               <label>Ulica i numer</label>
-              <ValidatedInput name="buyerStreetWithNumber" type="text" value={invoiceData.buyerStreetWithNumber} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="buyerStreetWithNumber"
+                type="text"
+                value={invoiceData.buyerStreetWithNumber}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
             <div>
               <label>Kod pocztowy</label>
-              <ValidatedInput name="buyerZipcode" type="text" value={invoiceData.buyerZipcode} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="buyerZipcode"
+                type="text"
+                value={invoiceData.buyerZipcode}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
             <div>
               <label>Miejscowość</label>
-              <ValidatedInput name="buyerCity" type="text" value={invoiceData.buyerCity} onChange={handleChange} formSubmitted={formSubmitted} />
+              <ValidatedInput
+                name="buyerCity"
+                type="text"
+                value={invoiceData.buyerCity}
+                onChange={handleChange}
+                formSubmitted={formSubmitted}
+              />
             </div>
           </CardContent>
         </Card>
@@ -259,15 +433,20 @@ export default function InvoiceForm({ setsavedInvoicesData,savedInvoicesData, se
                 formSubmitted={formSubmitted}
               />
             ))}
-            <Button className="mt-2 ml-8" variant={"secondary"} onClick={addInvoiceItem}>
-              + Dodaj pozycję
+            <Button
+              className="lg:mt-2 lg:ml-8 lg:w-fit ml-0 w-full"
+              variant={"secondary"}
+              onClick={addInvoiceItem}
+            >
+              <Plus size={12} className="mr-1" />
+              Dodaj pozycję
             </Button>
             <InvoiceSummary invoiceItems={invoiceItems} printView={false} />
           </CardContent>
         </Card>
       </section>
-      
-      <Button type="submit">Zapisz fakturę</Button>
+
+      <Button type="submit" className="lg:w-fit w-full">Zapisz fakturę</Button>
     </form>
   );
 }
