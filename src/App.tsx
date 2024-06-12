@@ -4,7 +4,6 @@ import Header from "./components/Header";
 import InvoiceForm from "./components/InvoiceForm";
 import {
   extractSellersAndBuyers,
-  formatDate,
   generateInvoiceNumber,
   invoiceDefaultData,
   invoiceDefaultItems,
@@ -16,10 +15,11 @@ import { Toaster } from "@/components/ui/sonner"
 function App() {
   const [invoiceData, setInvoiceData] = useState<InvoiceData>(invoiceDefaultData);
   const [invoiceItems, setInvoiceItems] = useState<InvoiceItem[]>(invoiceDefaultItems);
-
   const [sellersData, setSellersData] = useState<SellerInfo[]>([]);
   const [buyersData, setBuyersData] = useState<BuyerInfo[]>([]);
-  const [savedInvoiceData, setSavedInvoiceData] = useState<Record<string, InvoiceData>>({});
+  const [savedInvoicesData, setsavedInvoicesData] = useState<Record<string, InvoiceData>>({});
+  const [printMode, setPrintMode] = useState(false);
+  const [isFormSaved, setIsFormSaved] = useState<boolean>(false);
 
   function loadSpecificInvoice(e: React.MouseEvent<HTMLDivElement>) {
     const invoiceNumber = e.currentTarget
@@ -27,10 +27,10 @@ function App() {
       ?.getAttribute("data-invoice-number");
 
     if (invoiceNumber) {
-      const specificInvoiceData = savedInvoiceData[invoiceNumber];
+      const specificInvoiceData = savedInvoicesData[invoiceNumber];
       setInvoiceData(specificInvoiceData);
       setInvoiceItems(specificInvoiceData.invoiceItems);
-      console.log(specificInvoiceData);
+      setIsFormSaved(true);
     }
   }
 
@@ -68,36 +68,39 @@ function App() {
   }
 
   const resetForm = () => {
-    const invoiceNumber = generateInvoiceNumber(savedInvoiceData, new Date());
+    const invoiceNumber = generateInvoiceNumber(savedInvoicesData, new Date());
     
     setInvoiceData({...invoiceDefaultData, invoiceNumber});
     setInvoiceItems(invoiceDefaultItems);
+    setIsFormSaved(false);
   };
 
   useEffect(() => {
-    const savedInvoiceData = JSON.parse(
+    const savedInvoicesData = JSON.parse(
       localStorage.getItem("invoiceData") as string
     );
-    const { sellers, buyers } = extractSellersAndBuyers(savedInvoiceData);
-    const invoiceNumber = generateInvoiceNumber(savedInvoiceData, new Date());
+    const { sellers, buyers } = extractSellersAndBuyers(savedInvoicesData);
+    const invoiceNumber = generateInvoiceNumber(savedInvoicesData, new Date());
 
     setInvoiceData({ ...invoiceData, invoiceNumber });
-    setSavedInvoiceData(savedInvoiceData);
+    setsavedInvoicesData(savedInvoicesData);
     setSellersData(Object.values(sellers));
     setBuyersData(Object.values(buyers));
   }, []);
 
   return (
     <>
-      <PrintView invoiceData={invoiceData} />
       <Header
-        savedInvoiceData={savedInvoiceData}
+        savedInvoicesData={savedInvoicesData}
         loadSpecificInvoice={loadSpecificInvoice}
         resetForm={resetForm}
+        printMode={printMode}
+        setPrintMode={setPrintMode}
+        isFormSaved={isFormSaved}
       />
-      <InvoiceForm
-        setSavedInvoiceData={setSavedInvoiceData}
-        savedInvoiceData={savedInvoiceData}
+      {printMode ? <PrintView invoiceData={invoiceData} /> : <InvoiceForm
+        setsavedInvoicesData={setsavedInvoicesData}
+        savedInvoicesData={savedInvoicesData}
         invoiceData={invoiceData}
         setInvoiceData={setInvoiceData}
         invoiceItems={invoiceItems}
@@ -106,7 +109,8 @@ function App() {
         buyersData={buyersData}
         loadSpecificSeller={loadSpecificSeller}
         loadSpecificBuyer={loadSpecificBuyer}
-      />
+        setIsFormSaved={setIsFormSaved}
+      />}
       <Toaster />
     </>
   );

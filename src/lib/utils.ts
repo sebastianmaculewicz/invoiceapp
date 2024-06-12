@@ -55,16 +55,16 @@ export function formatDate(d: Date) {
   );
 }
 
-export function generateInvoiceNumber(savedInvoiceData: Record<string, InvoiceData>, currentDate: Date) {
+export function generateInvoiceNumber(savedInvoicesData: Record<string, InvoiceData>, currentDate: Date) {
   const currentDateObj = currentDate;
   const currentMonth = currentDateObj.getMonth() + 1;
   const currentYear = currentDateObj.getFullYear();
 
   let invoiceCount = 0;
 
-  if(savedInvoiceData) {
-    for (let invoiceId in savedInvoiceData) {
-      const invoiceDate = new Date(savedInvoiceData[invoiceId].invoiceIssueDate);
+  if(savedInvoicesData) {
+    for (let invoiceId in savedInvoicesData) {
+      const invoiceDate = new Date(savedInvoicesData[invoiceId].invoiceIssueDate);
       if (invoiceDate.getMonth() + 1 === currentMonth && invoiceDate.getFullYear() === currentYear) {
         invoiceCount++;
       }

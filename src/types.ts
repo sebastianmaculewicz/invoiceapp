@@ -35,8 +35,8 @@ export interface InvoiceData {
 }
 
 export interface InvoiceFormProps {
-  setSavedInvoiceData: React.Dispatch<React.SetStateAction<Record<string, InvoiceData>>>;
-  savedInvoiceData: Record<string, InvoiceData>;
+  setsavedInvoicesData: React.Dispatch<React.SetStateAction<Record<string, InvoiceData>>>;
+  savedInvoicesData: Record<string, InvoiceData>;
   setInvoiceData: React.Dispatch<React.SetStateAction<InvoiceData>>;
   invoiceData: InvoiceData;
   setInvoiceItems: React.Dispatch<React.SetStateAction<InvoiceItem[]>>;
@@ -45,6 +45,7 @@ export interface InvoiceFormProps {
   buyersData: BuyerInfo[];
   loadSpecificSeller: (e: React.MouseEvent<HTMLDivElement>) => void;
   loadSpecificBuyer: (e: React.MouseEvent<HTMLDivElement>) => void;
+  setIsFormSaved: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface InvoiceFormItemProps {
@@ -85,9 +86,12 @@ export interface Buyers {
 }
 
 export interface InvoiceDataProps {
-  savedInvoiceData: Record<string, InvoiceData>;
+  savedInvoicesData: Record<string, InvoiceData>;
   loadSpecificInvoice: (e: React.MouseEvent<HTMLDivElement>) => void;
   resetForm?: () => void;
+  printMode?: boolean;
+  setPrintMode?: React.Dispatch<React.SetStateAction<boolean>>;
+  isFormSaved?: boolean;
 }
 
 export interface SavedSellersProps {
@@ -102,4 +106,9 @@ export interface SavedBuyersProps {
 
 export interface InvoiceItemProps {
   form: UseFormReturn<FormData>;
+}
+
+export interface PrintModeSwitchProps {
+  printMode: boolean;
+  setPrintMode: React.Dispatch<React.SetStateAction<boolean>>;
 }

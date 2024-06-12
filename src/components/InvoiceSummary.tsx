@@ -39,7 +39,7 @@ export default function InvoiceSummary({
   return (
     <section id="invoice_summary" className="flex justify-end gap-5">
       {printView ? (
-        <div className="print-view flex justify-between items-center gap-5 w-full">
+        <div className="print-view grid grid-cols-2 items-center gap-5 w-full">
           <div>
             <p className="text-xl">
               <strong>Do zapłaty: </strong>
@@ -47,7 +47,7 @@ export default function InvoiceSummary({
             </p>
             <p>Słownie: {convertNumberToWords(totalBrutto)}</p>
           </div>
-          <div>
+          <div className="flex justify-end">
             <table className="text-right">
               <tbody>
                 <tr>

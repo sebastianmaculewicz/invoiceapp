@@ -16,13 +16,13 @@ export default function PrintView({
 }) {
   return (
     <div className="my-10 text-left text-sm leading-6">
-      <div className="mb-5">
+      <div className="mb-10">
         <p className="mb-5">
           <strong>Faktura numer: </strong>
           <span>{invoiceData.invoiceNumber}</span>
         </p>
         <p>
-          <strong>Data i miejsce wystawienia: </strong>
+          <strong>Miejsce i data wystawienia: </strong>
           <span>
             {invoiceData.invoiceIssuePlace}, {invoiceData.invoiceIssueDate}
           </span>
@@ -40,7 +40,7 @@ export default function PrintView({
           <span>{invoiceData.invoicePaymentDate}</span>
         </p>
       </div>
-      <div className="grid grid-cols-2 mb-5">
+      <div className="grid grid-cols-2 mb-10">
         <div>
           <strong>Sprzedawca</strong>
           <p>{invoiceData.sellerName}</p>
@@ -63,7 +63,7 @@ export default function PrintView({
         </div>
       </div>
       <div>
-        <div className="mb-5">
+        <div className="mb-10">
           <Table className="-mx-4">
             <TableHeader>
               <TableRow>

@@ -6,21 +6,26 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { InvoiceDataProps } from "@/types";
+import { List } from "lucide-react";
 
 export default function SavedInvoices({
-  savedInvoiceData,
+  savedInvoicesData,
   loadSpecificInvoice,
 }: InvoiceDataProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant={"outline"} disabled={!savedInvoiceData ? true : false}>
-          Zapisane faktury
+        <Button
+          variant={"outline"}
+          disabled={!savedInvoicesData ? true : false}
+          className="flex gap-2"
+        >
+          <List /> Zapisane faktury
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="max-h-[50vh] overflow-y-auto">
-        {savedInvoiceData &&
-          Object.keys(savedInvoiceData).map((invoiceNumber) => (
+        {savedInvoicesData &&
+          Object.keys(savedInvoicesData).map((invoiceNumber) => (
             <DropdownMenuItem
               key={invoiceNumber}
               data-invoice-number={invoiceNumber}
@@ -29,7 +34,7 @@ export default function SavedInvoices({
             >
               {invoiceNumber +
                 " - " +
-                savedInvoiceData[invoiceNumber].invoiceIssueDate}
+                savedInvoicesData[invoiceNumber].invoiceIssueDate}
             </DropdownMenuItem>
           ))}
       </DropdownMenuContent>

@@ -10,8 +10,7 @@ import InvoiceSummary from "./InvoiceSummary";
 import ValidatedInput from "./ValidatedInput";
 import { toast } from "sonner";
 
-export default function InvoiceForm({ setSavedInvoiceData,savedInvoiceData, setInvoiceData, invoiceData, setInvoiceItems, invoiceItems, sellersData, buyersData, loadSpecificSeller, loadSpecificBuyer }: InvoiceFormProps) {
-  const [emptyField, setEmptyField] = useState<string | null>(null);
+export default function InvoiceForm({ setsavedInvoicesData,savedInvoicesData, setInvoiceData, invoiceData, setInvoiceItems, invoiceItems, sellersData, buyersData, loadSpecificSeller, loadSpecificBuyer, setIsFormSaved }: InvoiceFormProps) {
   const [formSubmitted, setFormSubmitted] = useState<boolean>(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,7 +20,7 @@ export default function InvoiceForm({ setSavedInvoiceData,savedInvoiceData, setI
       let updatedInvoiceData = { ...invoiceData, [name]: value };
 
       if(name === 'invoiceIssueDate') {
-        updatedInvoiceData = { ...updatedInvoiceData, invoiceNumber: generateInvoiceNumber(savedInvoiceData, new Date(value)), invoiceSaleDate: value };
+        updatedInvoiceData = { ...updatedInvoiceData, invoiceNumber: generateInvoiceNumber(savedInvoicesData, new Date(value)), invoiceSaleDate: value };
       }
 
       if(updatedInvoiceData.sellerID === -1) {
@@ -105,13 +104,13 @@ export default function InvoiceForm({ setSavedInvoiceData,savedInvoiceData, setI
 
     for (const key in invoiceData) {
       if (invoiceData.hasOwnProperty(key) && !invoiceData[key as keyof typeof invoiceData] && key !== 'sellerID' && key !== 'buyerID') {
-        setEmptyField(key);
         return;
       }
     }
 
-    localStorage.setItem("invoiceData", JSON.stringify({...savedInvoiceData, ...invoiceDataToSave }));
-    setSavedInvoiceData({...savedInvoiceData, ...invoiceDataToSave });
+    localStorage.setItem("invoiceData", JSON.stringify({...savedInvoicesData, ...invoiceDataToSave }));
+    setsavedInvoicesData({...savedInvoicesData, ...invoiceDataToSave });
+    setIsFormSaved(true);
 
     toast("Zapisano fakturę", {
       description: invoiceData.invoiceNumber,

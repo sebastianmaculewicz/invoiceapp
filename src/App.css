@@ -10,3 +10,13 @@
       display: none;
   }
 }
+
+@media print {
+  #root {
+    max-width: 100%;
+  }
+
+  header {
+    display: none !important;
+  }
+}
